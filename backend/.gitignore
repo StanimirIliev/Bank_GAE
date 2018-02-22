@@ -1,0 +1,10 @@
+.gradle/
+.idea/
+build/
+gradle/
+gradlew
+gradlew.bat
+out/
+settings.gradle
+src/main/webapp/favicon.ico
+src/main/webapp/static/

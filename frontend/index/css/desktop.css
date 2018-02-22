@@ -1,0 +1,87 @@
+:focus {
+  outline : none;
+}
+
+::-moz-focus-inner {
+  border : 0;
+}
+
+.doc {
+  z-index          : -1;
+  background-color : #3171c8;
+}
+
+.logo {
+  position : absolute;
+  width    : auto;
+  height   : 90%;
+  margin   : auto 30%;
+}
+
+.container {
+  z-index  : 2;
+  position : absolute;
+  width    : 40%;
+  height   : 20%;
+  margin   : 20% 27%;
+}
+
+.button {
+  z-index          : 3;
+  position         : relative;
+  width            : 100%;
+  height           : 30%;
+  margin-top       : 2px;
+  color            : #fff;
+  border           : 1px solid;
+  border-radius    : 10px;
+  background-color : rgba(49, 113, 200, 0.9);
+  font-size        : 18pt;
+  font-weight      : bold;
+}
+
+.button:hover {
+  background-color: rgba(49, 150, 255, 0.75);
+}
+
+.button:active {
+  background-color: rgba(60, 160, 255, 1);
+}
+
+.form__button {
+  height           : 40px;
+}
+
+.form {
+  z-index    : 2;
+  width      : 100%;
+  color      : #fff;
+  font-size  : 18pt;
+}
+
+.form__input {
+  position  : relative;
+  width     : 40%;
+  float     : right;
+  clear     : right;
+  font-size : 16pt;
+}
+
+.form__label {
+  position    : relative;
+  left        : 0;
+  float       : left;
+  clear       : left;
+  padding-top : 4px;
+  text-shadow : 0px 0px 15px #000;
+  white-space : nowrap;
+}
+
+.error {
+  padding          : 5px;
+  color            : #fff;
+  border-radius    : 10px;
+  background-color : rgba(0, 0, 0, 0.75);
+  text-align       : justify;
+  font-size        : 16pt;
+}

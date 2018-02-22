@@ -1,0 +1,49 @@
+.container__selected_account {
+    width: 50%;
+    margin-left: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 22pt;
+}
+.selected_account__buttons {
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+}
+.selected_account__button {
+    margin-right: 15px;
+    width: 140px !important;
+    line-height: 50px !important;
+    font-size: 17pt !important;
+}
+
+.operation__splitter {
+    background-color: #3171c8;
+    border: none;
+    height: 2px;
+    width: 100%;
+}
+.container__operation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+.operation__input {
+    height: 40px;
+    width: 150px;
+    font-size: 25pt;
+    text-align: center;
+    border: none;
+    border-radius: 7px;
+}
+.button--execute {
+    width: 150px;
+    height: 40px !important;
+    border-radius: 7px;
+    font-size: 18pt !important;
+    float: right;
+    margin-right: 25%;
+    margin-top: 10px;
+}

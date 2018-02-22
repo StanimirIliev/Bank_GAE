@@ -1,0 +1,7 @@
+.button--close {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}

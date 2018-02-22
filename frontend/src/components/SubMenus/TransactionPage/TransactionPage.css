@@ -1,0 +1,32 @@
+.container__transaction {
+    position: absolute;
+    width: 80%;
+    height: 60%;
+    margin-left: 10%;
+    overflow-y: scroll;
+}
+.table__transaction {
+    font-size: 22pt;
+    border-collapse: collapse;
+    width: 100%;
+}
+.table__transaction__header__rows {
+    background-color: rgba(49, 113, 200, 0.7);
+    font-size: 26pt;
+}
+.table__transaction__body__rows {
+    background-color: rgba(0, 0, 0, 0);
+    padding-bottom: 10px;
+}
+.table__transaction__body__rows:nth-child(even) {
+    background-color: rgba(49, 113, 200, 0.3);
+}
+.table__transaction__columns {
+    padding: 3px;
+}
+.table__transaction__body {
+    display: block;
+    height: 55px;
+    width: 170%;
+    overflow-y: scroll;
+}

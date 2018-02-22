@@ -1,0 +1,28 @@
+.container__accounts {
+  text-align: center;
+}
+
+.show_accounts__header {
+  font-size: 30pt;
+}
+
+.show_accounts__container {
+  width: 50%;
+  left: 25%;
+  position: relative;
+  height: 50%;
+  overflow-y: scroll;
+}
+
+.splitter__accounts {
+  height: 3px;
+  background-color: #3171c8;
+  border: none;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.container__accounts__item {
+  text-decoration: none;
+  color: #fff;
+}

@@ -1,0 +1,21 @@
+.container__loading {
+    position: fixed;
+    width: 70%;
+    height: 80%;
+    left: 15%;
+    top: 10%;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 20px;
+}
+
+.loading__img {
+    animation: icon-spin infinite 1s linear;
+    position: absolute;
+    left: 48%;
+    top: 45%;
+}
+
+@keyframes icon-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
