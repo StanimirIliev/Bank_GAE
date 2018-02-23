@@ -9,14 +9,14 @@ import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rules.DataStoreRule
+import rules.DatastoreRule
 import java.time.LocalDateTime
 
 class DatastoreTransactionRepositoryTest {
 
     @Rule
     @JvmField
-    val dataStoreRule = DataStoreRule()
+    val dataStoreRule = DatastoreRule()
     private lateinit var transactionRepository: TransactionRepository
     private val userId = 1L// random value
     private val accountId = 1L// random value

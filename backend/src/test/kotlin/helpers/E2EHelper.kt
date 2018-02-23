@@ -6,6 +6,7 @@ import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig
+import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper
 import com.google.gson.GsonBuilder
 import com.google.gson.TypeAdapter
@@ -27,7 +28,6 @@ class E2EHelper(private val server: ConfiguredServer, enableLogging: Boolean) : 
     val gson = GsonBuilder()
             .registerTypeAdapter(LocalDateTime::class.java, object : TypeAdapter<LocalDateTime>() {
                 override fun read(`in`: JsonReader): LocalDateTime {
-                    println("Read method was called")
                     val value = `in`.nextString()
                     return LocalDateTime.parse(value)
                 }
@@ -42,7 +42,8 @@ class E2EHelper(private val server: ConfiguredServer, enableLogging: Boolean) : 
             .setApplyAllHighRepJobPolicy()
             .setNoStorage(false)
             .setBackingStoreLocation("tmp/local_db.bin")
-    private val helper = LocalServiceTestHelper(configDatastore)
+    private val configMemcache = LocalMemcacheServiceTestConfig()
+    private val helper = LocalServiceTestHelper(configDatastore, configMemcache)
 
     init {
         if (enableLogging) {

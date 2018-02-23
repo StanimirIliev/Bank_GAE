@@ -8,8 +8,10 @@ import com.clouway.app.adapter.http.Secured
 import com.clouway.app.adapter.http.delete.RemoveAccountRoute
 import com.clouway.app.adapter.http.get.*
 import com.clouway.app.adapter.http.post.*
+import com.clouway.app.adapter.memcache.CachedSessions
 import com.clouway.app.datastore.NoSqlDatastoreTemplate
 import com.google.appengine.api.datastore.DatastoreServiceFactory
+import com.google.appengine.api.memcache.MemcacheServiceFactory
 import freemarker.template.Configuration
 import freemarker.template.TemplateExceptionHandler
 import org.apache.log4j.Logger
@@ -28,7 +30,10 @@ class ConfiguredServer {
 
         val datastoreTemplate = NoSqlDatastoreTemplate(DatastoreServiceFactory.getDatastoreService())
 
-        val sessionRepository = DatastoreSessionRepository(datastoreTemplate)
+        val sessionRepository = CachedSessions(
+                DatastoreSessionRepository(datastoreTemplate),
+                MemcacheServiceFactory.getMemcacheService()
+        )
         val transactionRepository = DatastoreTransactionRepository(datastoreTemplate)
         val accountRepository = DatastoreAccountRepository(datastoreTemplate, transactionRepository)
         val userRepository = DatastoreUserRepository(datastoreTemplate)

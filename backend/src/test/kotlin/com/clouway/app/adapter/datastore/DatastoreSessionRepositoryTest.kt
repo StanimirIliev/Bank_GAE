@@ -2,19 +2,21 @@ package com.clouway.app.adapter.datastore
 
 import com.clouway.app.core.Session
 import com.clouway.app.core.SessionRepository
+import com.google.appengine.api.memcache.MemcacheServiceFactory
+import org.apache.log4j.Logger
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rules.DataStoreRule
+import rules.DatastoreRule
 import java.time.LocalDateTime
 
 class DatastoreSessionRepositoryTest {
 
     @Rule
     @JvmField
-    val dataStoreRule = DataStoreRule()
+    val dataStoreRule = DatastoreRule()
     private lateinit var sessionRepository: SessionRepository
     val userId = 1L// random value
 

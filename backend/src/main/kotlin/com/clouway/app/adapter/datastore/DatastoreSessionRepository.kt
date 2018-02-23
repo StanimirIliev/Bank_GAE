@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class DatastoreSessionRepository(private val datastoreTemplate: DatastoreTemplate) : SessionRepository {
+
     override fun registerSession(session: Session): String? {
         val id = UUID.randomUUID().toString()
         val entity = Entity("Sessions", id)
@@ -52,17 +53,19 @@ class DatastoreSessionRepository(private val datastoreTemplate: DatastoreTemplat
     }
 
     override fun terminateInactiveSessions(instant: LocalDateTime): Int {
-        val sessions = datastoreTemplate.fetch("Sessions", null, object : EntityMapper<Pair<Session, String>> {
-            override fun fetch(entity: Entity): Pair<Session, String> {
-                return Pair(Session(
+        data class PairSessionSessionId(val session: Session, val sessionId: String)
+
+        val sessions = datastoreTemplate.fetch("Sessions", null, object : EntityMapper<PairSessionSessionId> {
+            override fun fetch(entity: Entity): PairSessionSessionId {
+                return PairSessionSessionId(Session(
                         entity.getProperty("UserId").toString().toLong(),
                         LocalDateTime.parse(entity.getProperty("CreatedOn").toString()),
                         LocalDateTime.parse(entity.getProperty("ExpiresAt").toString())
                 ), entity.key.name)
             }
         })
-        val inactiveSessions = sessions.filter { it.first.expiresAt.isBefore(instant) }
-        inactiveSessions.forEach { terminateSession(it.second) }
+        val inactiveSessions = sessions.filter { it.session.expiresAt.isBefore(instant) }
+        inactiveSessions.forEach { terminateSession(it.sessionId) }
         return inactiveSessions.count()
     }
 }

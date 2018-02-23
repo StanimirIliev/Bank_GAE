@@ -6,13 +6,13 @@ import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rules.DataStoreRule
+import rules.DatastoreRule
 
 class DatastoreUserRepositoryTest {
 
     @Rule
     @JvmField
-    val dataStoreRule = DataStoreRule()
+    val dataStoreRule = DatastoreRule()
     lateinit var userRepository: UserRepository
 
     @Before
