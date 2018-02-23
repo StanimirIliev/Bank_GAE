@@ -1,6 +1,7 @@
 package e2e
 
 import com.clouway.app.ConfiguredServer
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetAccountResponseDto
 import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
 import com.clouway.app.core.httpresponse.GetMessageResponseDto
@@ -28,7 +29,10 @@ class WithdrawTest {
 
     @Test
     fun executeWithdrawAsAuthorizedUser() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         val id = createAccountAndDeposit50Bgn(sessionId)
         // execute withdraw
         val requestBody = """{"params":{"value":30}}"""
@@ -57,7 +61,10 @@ class WithdrawTest {
 
     @Test
     fun tryToExecuteWithdrawBiggerThanBalance() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         val id = createAccountAndDeposit50Bgn(sessionId)
         // try to execute withdraw bigger than the balance
         val requestBody = """{"params":{"value":80}}"""
@@ -87,8 +94,14 @@ class WithdrawTest {
 
     @Test
     fun tryToExecuteWithdrawAsUnauthorizedUser() {
-        val sessionIdOfUser1 = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user1", "password")
-        val sessionIdOfUser2 = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user2", "password")
+        val sessionIdOfUser1 = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user1", "password")
+        )
+        val sessionIdOfUser2 = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("sometwo@example.com", "user2", "password")
+        )
         // create new account authorized by user1
         val id = createAccountAndDeposit50Bgn(sessionIdOfUser1)
         // assert that balance of the account of user1 is 50

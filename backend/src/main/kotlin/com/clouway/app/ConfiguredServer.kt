@@ -36,8 +36,15 @@ class ConfiguredServer {
         )
         val transactionRepository = DatastoreTransactionRepository(datastoreTemplate)
         val accountRepository = DatastoreAccountRepository(datastoreTemplate, transactionRepository)
-        val userRepository = DatastoreUserRepository(datastoreTemplate)
+        val emailSender = Sendgrid("https://api.sendgrid.com", System.getenv("SENDGRID_API_KEY"))
+        val registrationObserver = RegistrationObserver(emailSender, logger)
+        val userRepository = DatastoreUserRepository(datastoreTemplate, registrationObserver)
         val compositeValidator = CompositeValidator(
+                RegexValidationRule(
+                        "email",
+                        "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
+                        "Incorrect email.\n"
+                ),
                 RegexValidationRule(
                         "username",
                         "[a-zA-Z\\d]{4,15}",

@@ -1,6 +1,7 @@
 package e2e
 
 import com.clouway.app.ConfiguredServer
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetUsernameResponseDto
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpHeaders
@@ -30,7 +31,10 @@ class UsernameTest {
     @Test
     fun getUsernameAsAuthenticatedUser() {
         val username = "user"
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", username, "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", username, "password")
+        )
         // get username
         req = requestFactory.buildGetRequest(GenericUrl("$primaryUrl/v1/username"))
         req.headers = HttpHeaders().setCookie(sessionId)

@@ -2,6 +2,7 @@ package e2e
 
 import com.clouway.app.ConfiguredServer
 import com.clouway.app.core.Currency
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetAccountResponseDto
 import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
 import com.clouway.app.core.httpresponse.GetMessageResponseDto
@@ -30,7 +31,10 @@ class NewAccountTest {
 
     @Test
     fun addNewAccount() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         // assert that there is no accounts
         req = requestFactory.buildGetRequest(GenericUrl("$primaryUrl/v1/accounts"))
         req.headers = HttpHeaders().setCookie(sessionId)
@@ -81,7 +85,10 @@ class NewAccountTest {
 
     @Test
     fun tryToAddTwoAccountsWithTheSameName() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         // create new account
         val requestBody = """{"params":{"title":"Some fund","currency":"BGN"}}"""
         req = requestFactory.buildPostRequest(

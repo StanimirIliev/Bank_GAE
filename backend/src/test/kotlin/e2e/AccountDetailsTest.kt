@@ -2,6 +2,7 @@ package e2e
 
 import com.clouway.app.ConfiguredServer
 import com.clouway.app.core.Currency
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetAccountResponseDto
 import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
 import com.clouway.app.core.httpresponse.HttpError
@@ -31,7 +32,10 @@ class AccountDetailsTest {
         val accountTitle = "Fund for something"
         val accountCurrency = Currency.BGN
 
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         // create new account
         val requestBody = """{"params":{"title":"$accountTitle","currency":"$accountCurrency"}}"""
         req = requestFactory.buildPostRequest(
@@ -63,8 +67,14 @@ class AccountDetailsTest {
 
     @Test
     fun tryToGetAccountDetailsAsUnauthorizedUser() {
-        val sessionIdOfUser1 = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user1", "password")
-        val sessionIdOfUser2 = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user2", "password")
+        val sessionIdOfUser1 = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user1", "password")
+        )
+        val sessionIdOfUser2 = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("sometwo@example.com", "user2", "password")
+        )
         // create new account authorized by user1
         val requestBody = """{"params":{"title":"Some fund","currency":"BGN"}}"""
         req = requestFactory.buildPostRequest(
