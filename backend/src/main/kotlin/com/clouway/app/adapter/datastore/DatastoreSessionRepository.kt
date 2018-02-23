@@ -6,9 +6,7 @@ import com.clouway.app.core.Session
 import com.clouway.app.core.SessionRepository
 import com.google.appengine.api.datastore.Entity
 import com.google.appengine.api.datastore.KeyFactory
-import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.*
 
 class DatastoreSessionRepository(private val datastoreTemplate: DatastoreTemplate) : SessionRepository {

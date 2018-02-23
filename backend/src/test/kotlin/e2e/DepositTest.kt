@@ -4,7 +4,6 @@ import com.clouway.app.ConfiguredServer
 import com.clouway.app.core.httpresponse.GetAccountResponseDto
 import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
 import com.clouway.app.core.httpresponse.GetMessageResponseDto
-import com.clouway.app.core.httpresponse.HttpError
 import com.google.api.client.http.*
 import helpers.E2EHelper
 import org.hamcrest.CoreMatchers.`is`

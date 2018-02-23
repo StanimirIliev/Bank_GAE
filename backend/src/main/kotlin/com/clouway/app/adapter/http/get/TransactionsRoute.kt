@@ -5,16 +5,8 @@ import com.clouway.app.core.httpresponse.AccountTransactions
 import com.clouway.app.core.httpresponse.GetListAccountTransactionsResponseDto
 import com.clouway.app.core.httpresponse.GetTransactionsCountResponseDto
 import com.clouway.app.core.httpresponse.HttpError
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.TypeAdapter
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
 import spark.Request
 import spark.Response
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 class TransactionsRoute(
