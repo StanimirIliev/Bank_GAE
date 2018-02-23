@@ -6,13 +6,13 @@ import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rules.DataStoreRule
+import rules.DatastoreRule
 
 class DatastoreAccountRepositoryTest {
 
     @Rule
     @JvmField
-    val dataStoreRule = DataStoreRule()
+    val dataStoreRule = DatastoreRule()
     private lateinit var transactionRepository: TransactionRepository
     private lateinit var accountRepository: AccountRepository
     private val userId = 1L// random value
