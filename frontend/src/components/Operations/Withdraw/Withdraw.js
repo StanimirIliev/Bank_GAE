@@ -35,6 +35,17 @@ class Withdraw extends Component {
 
     executeWithdraw() {
         this.setState({ loading: true })
+        const amount = parseFloat(this.state.withdrawValue)
+        if(isNaN(amount) || amount < 0 || amount > 340282300000000000000000000000000000000) {
+            this.setState({
+                msg: {
+                    content: 'Invalid amount',
+                    positive: false
+                },
+                loading: false
+            })
+            return
+        }
         axios.post(`/v1/accounts/${this.state.id}/withdraw`, {
             params: {
                 value: parseFloat(this.state.withdrawValue)

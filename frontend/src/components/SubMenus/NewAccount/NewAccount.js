@@ -20,6 +20,17 @@ class NewAccount extends Component {
 
     createNewAccount() {
         this.setState({ loading: true })
+        const title = this.state.title
+        if(title === null || title.length > 30) {
+            this.setState({
+                message: {
+                    content: 'Invalid title',
+                    positive: false
+                },
+                loading: false
+            })
+            return
+        }
         axios.post('/v1/accounts', {
             params: {
                 title: this.state.title,
