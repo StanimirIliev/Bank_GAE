@@ -14,6 +14,8 @@
         <#list errors as error>
         <p class="error">${error.content}</p>
     </#list>
+    <label class="form__label" for="email">E-mail</label>
+    <input class="form__input" type="email" id="email" name="email" />
     <label class="form__label" for="username">Username</label>
     <input class="form__input" id="username" name="username" />
     <label class="form__label" for="password">Password</label>

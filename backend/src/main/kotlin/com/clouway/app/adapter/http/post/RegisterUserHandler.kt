@@ -2,6 +2,7 @@ package com.clouway.app.adapter.http.post
 
 import com.clouway.app.core.*
 import freemarker.template.Configuration
+import org.apache.log4j.Logger
 import spark.Request
 import spark.Response
 import spark.Route
@@ -13,16 +14,17 @@ class RegisterUserHandler(private val userRepository: UserRepository,
                           private val sessionRepository: SessionRepository,
                           private val validator: RequestValidator,
                           private val config: Configuration) : Route {
-    data class Params(val username: String, val password: String, val confirmPassword: String)
+    data class Params(val email: String, val username: String, val password: String, val confirmPassword: String)
 
     override fun handle(req: Request, resp: Response): Any {
         val dataModel = HashMap<String, List<Error>>()
         val values = req.body().split('&').map { it.substring(it.indexOf('=') + 1) }
-        val params = Params(values[0], values[1], values[2])
+        val params = Params(values[0].replace("%40", "@"), values[1], values[2], values[3])
         val template = config.getTemplate("registration.ftlh")
         resp.type("text/html")
         val out = StringWriter()
         val errorList = validator.validate(mapOf(
+                "email" to params.email,
                 "username" to params.username,
                 "password" to params.password
         ))
@@ -40,10 +42,10 @@ class RegisterUserHandler(private val userRepository: UserRepository,
                 }, out)
                 return out.toString()
             }
-            errorList.isEmpty() && userRepository.registerUser(params.username, params.password) == -1L -> {
+            errorList.isEmpty() && userRepository.registerUser(User(params.email, params.username, params.password)) == -1L -> {
                 template.process(dataModel.apply {
                     put("errors",
-                            listOf(Error("This username is already taken")))
+                            listOf(Error("This username or email is already taken")))
                 }, out)
                 return out.toString()
             }

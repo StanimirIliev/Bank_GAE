@@ -1,6 +1,7 @@
 package e2e
 
 import com.clouway.app.ConfiguredServer
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
 import com.google.api.client.http.*
 import helpers.E2EHelper
@@ -24,7 +25,10 @@ class RemoveAccountTest {
 
     @Test
     fun removeAccountAsAuthorizedUser() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         // create new account
         val requestBody = """{"params":{"title":"Fund for something","currency":"BGN"}}"""
         req = requestFactory.buildPostRequest(
@@ -59,8 +63,14 @@ class RemoveAccountTest {
 
     @Test
     fun tryToRemoveAccountAsUnauthorizedUser() {
-        val sessionIdOfUser1 = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user1", "password")
-        val sessionIdOfUser2 = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user2", "password")
+        val sessionIdOfUser1 = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user1", "password")
+        )
+        val sessionIdOfUser2 = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("sometwo@example.com", "user2", "password")
+        )
         // Create account authorized by user1
         val requestBody = """{"params":{"title":"Fund for something","currency":"BGN"}}"""
         req = requestFactory.buildPostRequest(

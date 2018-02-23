@@ -1,6 +1,7 @@
 package e2e
 
 import com.clouway.app.ConfiguredServer
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetAccountResponseDto
 import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
 import com.clouway.app.core.httpresponse.GetMessageResponseDto
@@ -27,7 +28,10 @@ class DepositTest {
 
     @Test
     fun executeDepositAsAuthorizedUser() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         val id = createAccount(sessionId)
         // assert that the account balance is 0
         req = requestFactory.buildGetRequest(GenericUrl("$primaryUrl/v1/accounts/$id"))
@@ -65,8 +69,14 @@ class DepositTest {
 
     @Test
     fun tryToExecuteDepositAsUnauthorizedUser() {
-        val sessionIdOfUser1 = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user1", "password")
-        val sessionIdOfUser2 = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user2", "password")
+        val sessionIdOfUser1 = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user1", "password")
+        )
+        val sessionIdOfUser2 = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("sometwo@example.com", "user2", "password")
+        )
         // create new account authorized by user1
         val id = createAccount(sessionIdOfUser1)
         // assert that balance of the account of user1 is 0
