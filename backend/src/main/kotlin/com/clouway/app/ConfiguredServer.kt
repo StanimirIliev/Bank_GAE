@@ -8,19 +8,17 @@ import com.clouway.app.adapter.http.Secured
 import com.clouway.app.adapter.http.delete.RemoveAccountRoute
 import com.clouway.app.adapter.http.get.*
 import com.clouway.app.adapter.http.post.*
-import com.clouway.app.core.Server
 import com.clouway.app.datastore.NoSqlDatastoreTemplate
 import com.google.appengine.api.datastore.DatastoreServiceFactory
 import freemarker.template.Configuration
 import freemarker.template.TemplateExceptionHandler
 import org.apache.log4j.Logger
-import spark.Spark
 import spark.Spark.*
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class ConfiguredServer : Server {
-    override fun start() {
+class ConfiguredServer {
+    fun start() {
         val logger = Logger.getLogger("ConfiguredServer")
         val config = Configuration(Configuration.VERSION_2_3_23)
         val file = File(ConfiguredServer::class.java.getResource("freemarker/templates/").file)
@@ -47,8 +45,6 @@ class ConfiguredServer : Server {
                         "Incorrect password.\nShould be between 6 and 30 characters long, " +
                                 "and to not contain special symbols."
                 ))
-
-        port(8080)
 
         initExceptionHandler { e -> logger.fatal("Unable to start the server", e) }
         internalServerError { _, res ->
@@ -84,14 +80,6 @@ class ConfiguredServer : Server {
                 sessionRepository,
                 Logger.getLogger("InactiveSessionsRemover")
         )).start()
-    }
-
-    override fun awaitInitialization() {
-        Spark.awaitInitialization()
-    }
-
-    override fun stop() {
-        Spark.stop()
     }
 
 }

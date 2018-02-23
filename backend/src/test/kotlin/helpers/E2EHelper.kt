@@ -1,6 +1,6 @@
 package helpers
 
-import com.clouway.app.core.Server
+import com.clouway.app.ConfiguredServer
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpTransport
@@ -21,7 +21,7 @@ import java.util.logging.Level
 import java.util.logging.LogRecord
 import java.util.logging.Logger
 
-class E2EHelper(private val server: Server, enableLogging: Boolean) : ExternalResource() {
+class E2EHelper(private val server: ConfiguredServer, enableLogging: Boolean) : ExternalResource() {
 
     val primaryUrl = "http://127.0.0.1:8080"
     val gson = GsonBuilder()
@@ -51,14 +51,15 @@ class E2EHelper(private val server: Server, enableLogging: Boolean) : ExternalRe
     }
 
     override fun before() {
+        Spark.port(8080)
         server.start()
-        server.awaitInitialization()
+        Spark.awaitInitialization()
         Spark.before(Filter { _, _ -> helper.setUp() })
         Spark.after(Filter { _, _ -> helper.tearDown() })
     }
 
     override fun after() {
-        server.stop()
+        Spark.stop()
         Thread.currentThread().join(10)// waits the server to stop
         File(configDatastore.backingStoreLocation).delete()
     }
