@@ -35,9 +35,9 @@ class ConfiguredServer {
         val userRepository = DatastoreUserRepository(datastoreTemplate)
         val compositeValidator = CompositeValidator(
                 RegexValidationRule(
-                        "userId",
+                        "username",
                         "[a-zA-Z\\d]{4,15}",
-                        "Incorrect userId.\nShould be between 4 and 15 characters long " +
+                        "Incorrect username.\nShould be between 4 and 15 characters long " +
                                 "and to not contain special symbols.\n"
                 ),
                 RegexValidationRule("password",

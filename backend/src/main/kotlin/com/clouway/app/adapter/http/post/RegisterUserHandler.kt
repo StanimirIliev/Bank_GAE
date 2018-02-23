@@ -22,7 +22,10 @@ class RegisterUserHandler(private val userRepository: UserRepository,
         val template = config.getTemplate("registration.ftlh")
         resp.type("text/html")
         val out = StringWriter()
-        val errorList = validator.validate(req.queryMap().toMap())
+        val errorList = validator.validate(mapOf(
+                "username" to params.username,
+                "password" to params.password
+        ))
         when {
             !errorList.isEmpty() -> {
                 dataModel["errors"] = errorList
@@ -37,7 +40,7 @@ class RegisterUserHandler(private val userRepository: UserRepository,
                 }, out)
                 return out.toString()
             }
-            userRepository.registerUser(params.username, params.password) == -1L && errorList.isEmpty() -> {
+            errorList.isEmpty() && userRepository.registerUser(params.username, params.password) == -1L -> {
                 template.process(dataModel.apply {
                     put("errors",
                             listOf(Error("This username is already taken")))
