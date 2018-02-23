@@ -2,12 +2,12 @@ package com.clouway.app.adapter.datastore
 
 import com.clouway.app.core.Session
 import com.clouway.app.core.SessionRepository
-import rules.DataStoreRule
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rules.DataStoreRule
 import java.time.LocalDateTime
 
 class DatastoreSessionRepositoryTest {

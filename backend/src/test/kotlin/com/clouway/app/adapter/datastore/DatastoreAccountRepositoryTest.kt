@@ -1,12 +1,12 @@
 package com.clouway.app.adapter.datastore
 
 import com.clouway.app.core.*
-import rules.DataStoreRule
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rules.DataStoreRule
 
 class DatastoreAccountRepositoryTest {
 
@@ -14,10 +14,10 @@ class DatastoreAccountRepositoryTest {
     @JvmField
     val dataStoreRule = DataStoreRule()
     private lateinit var transactionRepository: TransactionRepository
-    private lateinit var accountRepository: AccountRepository 
+    private lateinit var accountRepository: AccountRepository
     private val userId = 1L// random value
 
-    
+
     @Before
     fun setUp() {
         transactionRepository = DatastoreTransactionRepository(dataStoreRule.datastoreTemplate)
@@ -60,7 +60,7 @@ class DatastoreAccountRepositoryTest {
 
             override fun getTransactions(userId: Long): List<Transaction> = emptyList()
         }
-        val fakeAccountRepository = DatastoreAccountRepository(dataStoreRule.datastoreTemplate ,mockTransactionRepository)
+        val fakeAccountRepository = DatastoreAccountRepository(dataStoreRule.datastoreTemplate, mockTransactionRepository)
         val accountId = fakeAccountRepository.registerAccount(Account("some fund", userId, Currency.BGN, 0f))
         fakeAccountRepository.updateBalance(accountId, userId, 30f)
     }

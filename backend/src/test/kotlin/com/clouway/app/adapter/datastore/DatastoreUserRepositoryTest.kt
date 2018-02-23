@@ -1,12 +1,12 @@
 package com.clouway.app.adapter.datastore
 
 import com.clouway.app.core.UserRepository
-import rules.DataStoreRule
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rules.DataStoreRule
 
 class DatastoreUserRepositoryTest {
 
@@ -14,7 +14,7 @@ class DatastoreUserRepositoryTest {
     @JvmField
     val dataStoreRule = DataStoreRule()
     lateinit var userRepository: UserRepository
-    
+
     @Before
     fun setUp() {
         userRepository = DatastoreUserRepository(dataStoreRule.datastoreTemplate)

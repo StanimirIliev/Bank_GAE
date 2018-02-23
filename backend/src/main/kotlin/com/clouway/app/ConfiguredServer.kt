@@ -15,7 +15,6 @@ import freemarker.template.TemplateExceptionHandler
 import org.apache.log4j.Logger
 import spark.Spark.*
 import java.io.File
-import java.util.concurrent.TimeUnit
 
 class ConfiguredServer {
     fun start() {

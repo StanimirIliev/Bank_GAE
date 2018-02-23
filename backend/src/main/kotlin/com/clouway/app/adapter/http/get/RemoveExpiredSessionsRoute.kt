@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class RemoveExpiredSessionsRoute(private val sessionRepository: SessionRepository, private val logger: Logger) : Route {
     override fun handle(req: Request, resp: Response): Any {
         val removedSessions = sessionRepository.terminateInactiveSessions(LocalDateTime.now())
-        if(removedSessions > 0) {
+        if (removedSessions > 0) {
             logger.info("$removedSessions sessions was terminated because was expired.")
         }
         return resp.status(204)

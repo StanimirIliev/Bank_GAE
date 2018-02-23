@@ -1,13 +1,15 @@
 package com.clouway.app.adapter.datastore
 
-import com.clouway.app.core.*
-import rules.DataStoreRule
+import com.clouway.app.core.Operation
+import com.clouway.app.core.Transaction
+import com.clouway.app.core.TransactionRepository
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rules.DataStoreRule
 import java.time.LocalDateTime
 
 class DatastoreTransactionRepositoryTest {
@@ -18,7 +20,7 @@ class DatastoreTransactionRepositoryTest {
     private lateinit var transactionRepository: TransactionRepository
     private val userId = 1L// random value
     private val accountId = 1L// random value
-    
+
     @Before
     fun setUp() {
         transactionRepository = DatastoreTransactionRepository(dataStoreRule.datastoreTemplate)
