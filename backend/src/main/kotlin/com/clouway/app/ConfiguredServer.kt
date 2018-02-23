@@ -73,13 +73,10 @@ class ConfiguredServer {
             get("/transactions/:param", Secured(sessionRepository, TransactionsRoute(transactionRepository,
                     accountRepository), logger), transformer)
         }
+        path("/cron") {
+            get("/remove-expired-sessions", RemoveExpiredSessionsRoute(sessionRepository, logger))
+        }
         get("/*") { _, res -> res.redirect("/home") }
-        Thread(InactiveSessionsRemover(
-                1,
-                TimeUnit.HOURS,
-                sessionRepository,
-                Logger.getLogger("InactiveSessionsRemover")
-        )).start()
     }
 
 }
