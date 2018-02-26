@@ -17,9 +17,14 @@ import freemarker.template.TemplateExceptionHandler
 import org.apache.log4j.Logger
 import spark.Spark.*
 import java.io.File
+import java.nio.charset.Charset
 
 class ConfiguredServer {
     fun start() {
+        val sendgridApiKey = ConfiguredServer::class.java.getResourceAsStream("sendgrid.env")
+                .reader(Charset.defaultCharset())
+                .readText()
+
         val logger = Logger.getLogger("ConfiguredServer")
         val config = Configuration(Configuration.VERSION_2_3_23)
         val file = File(ConfiguredServer::class.java.getResource("freemarker/templates/").file)
@@ -36,9 +41,11 @@ class ConfiguredServer {
         )
         val transactionRepository = DatastoreTransactionRepository(datastoreTemplate)
         val accountRepository = DatastoreAccountRepository(datastoreTemplate, transactionRepository)
-        val emailSender = Sendgrid("https://api.sendgrid.com", System.getenv("SENDGRID_API_KEY"))
-        val emailSenderObserver = EmailSenderObserver(emailSender, logger)
-        val logsObserver = LogsObserver(logger)
+        val emailSender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
+        val mainObserver = MainObserver(
+                EmailSenderObserver(emailSender, logger),
+                LogsObserver(logger)
+        )
 
         val userRepository = DatastoreUserRepository(datastoreTemplate)
         val compositeValidator = CompositeValidator(
@@ -64,22 +71,14 @@ class ConfiguredServer {
             res.redirect("/static/index/images/500-wallpaper.jpg")
         }
 
-        val loginHandler = LoginUserHandler(userRepository, sessionRepository, config)
-        loginHandler.attachObserver(logsObserver)
-        val logoutHandler = LogoutRoute(sessionRepository, userRepository, logger)
-        logoutHandler.attachObserver(logsObserver)
-        val registrationHandler = RegisterUserHandler(userRepository, sessionRepository, compositeValidator, config)
-        registrationHandler.attachObserver(emailSenderObserver)
-        registrationHandler.attachObserver(logsObserver)
-
         val transformer = JsonTransformer()
         get("/index", IndexPageRoute())
-        post("/login", loginHandler)
+        post("/login", LoginUserHandler(userRepository, sessionRepository, mainObserver, config))
         get("/login", LoginPageRoute(config))
         get("/registration", RegistrationPageRoute(config))
-        post("/registration", registrationHandler)
+        post("/registration", RegisterUserHandler(userRepository, sessionRepository, mainObserver, compositeValidator, config))
         get("/home", Secured(sessionRepository, HomePageRoute(), logger))
-        get("/logout", logoutHandler, transformer)
+        get("/logout", LogoutRoute(sessionRepository, userRepository, mainObserver, logger), transformer)
         path("/v1") {
             path("/accounts") {
                 get("", Secured(sessionRepository, AccountsListRoute(accountRepository), logger), transformer)

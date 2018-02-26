@@ -9,15 +9,13 @@ import spark.Request
 import spark.Response
 import spark.Route
 import java.time.LocalDateTime
-import java.util.*
 
 class LogoutRoute(
         private val sessionRepository: SessionRepository,
         private val userRepository: UserRepository,
+        private val observer: Observer,
         private val logger: Logger
 ) : Route {
-
-    private val observers = LinkedList<Observer>()
 
     override fun handle(req: Request, resp: Response): Any {
         val sessionId = req.cookie("sessionId")
@@ -34,17 +32,9 @@ class LogoutRoute(
                 HttpError("Unable to terminate your session.")
             } else {
                 req.session().invalidate()
-                notifyAllObservers(username)
+                observer.onLogout(username)
                 resp.redirect("/index")
             }
         }
-    }
-
-    fun attachObserver(observer: Observer) {
-        observers.add(observer)
-    }
-
-    private fun notifyAllObservers(username: String) {
-        observers.forEach { it.onLogout(username) }
     }
 }
