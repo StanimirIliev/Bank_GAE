@@ -1,19 +1,20 @@
 package com.clouway.app.adapter.http.post
 
-import com.clouway.app.core.Error
-import com.clouway.app.core.Session
-import com.clouway.app.core.SessionRepository
-import com.clouway.app.core.UserRepository
+import com.clouway.app.core.*
+import com.clouway.app.core.Observer
 import freemarker.template.Configuration
 import spark.Request
 import spark.Response
 import spark.Route
 import java.io.StringWriter
 import java.time.LocalDateTime
+import java.util.*
 
 class LoginUserHandler(private val userRepository: UserRepository, private val sessionRepository: SessionRepository,
                        private val config: Configuration) : Route {
     data class Params(val usernameOfEmail: String, val password: String)
+
+    private val observers = LinkedList<Observer>()
 
     override fun handle(req: Request, resp: Response): Any {
         val template = config.getTemplate("login.ftlh")
@@ -36,6 +37,15 @@ class LoginUserHandler(private val userRepository: UserRepository, private val s
                 LocalDateTime.now().plusHours(2)
         ))
         resp.cookie("sessionId", sessionId)
+        notifyAllObservers(params.usernameOfEmail)
         return resp.redirect("/home")
+    }
+
+    fun attachObserver(observer: Observer) {
+        observers.add(observer)
+    }
+
+    private fun notifyAllObservers(username: String) {
+        observers.forEach { it.onLogin(username) }
     }
 }

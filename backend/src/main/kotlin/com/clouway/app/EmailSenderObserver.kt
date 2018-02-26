@@ -1,6 +1,7 @@
 package com.clouway.app
 
 import com.clouway.app.core.EmailSender
+import com.clouway.app.core.Observer
 import org.apache.log4j.Logger
 import java.io.IOException
 
@@ -8,8 +9,8 @@ import java.io.IOException
  * @author Stanimir Iliev <stanimir.iliev@clouway.com>
  */
 
-class RegistrationObserver(private val sender: EmailSender, private val logger: Logger) {
-    fun onRegister(email: String, username: String) {
+class EmailSenderObserver(private val sender: EmailSender, private val logger: Logger) : Observer {
+    override fun onRegister(email: String, username: String) {
         try {
             sender
                     .setFrom("e.corp@bank.com")
@@ -22,4 +23,8 @@ class RegistrationObserver(private val sender: EmailSender, private val logger: 
             logger.error("Unable to send email to $email with username $username")
         }
     }
+
+    override fun onLogin(username: String) {}
+
+    override fun onLogout(username: String) {}
 }

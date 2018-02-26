@@ -37,8 +37,10 @@ class ConfiguredServer {
         val transactionRepository = DatastoreTransactionRepository(datastoreTemplate)
         val accountRepository = DatastoreAccountRepository(datastoreTemplate, transactionRepository)
         val emailSender = Sendgrid("https://api.sendgrid.com", System.getenv("SENDGRID_API_KEY"))
-        val registrationObserver = RegistrationObserver(emailSender, logger)
-        val userRepository = DatastoreUserRepository(datastoreTemplate, registrationObserver)
+        val emailSenderObserver = EmailSenderObserver(emailSender, logger)
+        val logsObserver = LogsObserver(logger)
+
+        val userRepository = DatastoreUserRepository(datastoreTemplate)
         val compositeValidator = CompositeValidator(
                 RegexValidationRule(
                         "email",
@@ -62,14 +64,22 @@ class ConfiguredServer {
             res.redirect("/static/index/images/500-wallpaper.jpg")
         }
 
+        val loginHandler = LoginUserHandler(userRepository, sessionRepository, config)
+        loginHandler.attachObserver(logsObserver)
+        val logoutHandler = LogoutRoute(sessionRepository, userRepository, logger)
+        logoutHandler.attachObserver(logsObserver)
+        val registrationHandler = RegisterUserHandler(userRepository, sessionRepository, compositeValidator, config)
+        registrationHandler.attachObserver(emailSenderObserver)
+        registrationHandler.attachObserver(logsObserver)
+
         val transformer = JsonTransformer()
         get("/index", IndexPageRoute())
-        post("/login", LoginUserHandler(userRepository, sessionRepository, config))
+        post("/login", loginHandler)
         get("/login", LoginPageRoute(config))
         get("/registration", RegistrationPageRoute(config))
-        post("/registration", RegisterUserHandler(userRepository, sessionRepository, compositeValidator, config))
+        post("/registration", registrationHandler)
         get("/home", Secured(sessionRepository, HomePageRoute(), logger))
-        get("/logout", LogoutRoute(sessionRepository, logger), transformer)
+        get("/logout", logoutHandler, transformer)
         path("/v1") {
             path("/accounts") {
                 get("", Secured(sessionRepository, AccountsListRoute(accountRepository), logger), transformer)
