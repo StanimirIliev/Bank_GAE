@@ -1,6 +1,5 @@
 package com.clouway.app.adapter.datastore
 
-import com.clouway.app.RegistrationObserver
 import com.clouway.app.SaltedHash
 import com.clouway.app.core.User
 import com.clouway.app.core.UserRepository
@@ -13,10 +12,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator.EQUAL
 import com.google.appengine.api.datastore.Query.FilterPredicate
 import org.apache.commons.codec.digest.DigestUtils
 
-class DatastoreUserRepository(
-        private val datastoreTemplate: DatastoreTemplate,
-        private val observer: RegistrationObserver
-) : UserRepository {
+class DatastoreUserRepository(private val datastoreTemplate: DatastoreTemplate) : UserRepository {
 
     private val entityMapper = object : EntityMapper<Entity> {
         override fun fetch(entity: Entity): Entity = entity
@@ -38,12 +34,8 @@ class DatastoreUserRepository(
         entity.setProperty("Username", user.username)
         entity.setProperty("Password", saltedHash.hash)
         entity.setProperty("Salt", saltedHash.salt)
-        val key = datastoreTemplate.insert(entity)
-        if (key != null) {
-            observer.onRegister(user.email, user.username)
-            return key.id
-        }
-        return -1L
+        val key = datastoreTemplate.insert(entity) ?: return -1L
+        return key.id
     }
 
     override fun authenticateByUsername(username: String, password: String): Boolean {

@@ -1,8 +1,8 @@
 package com.clouway.app.adapter.http.post
 
 import com.clouway.app.core.*
+import com.clouway.app.core.Observer
 import freemarker.template.Configuration
-import org.apache.log4j.Logger
 import spark.Request
 import spark.Response
 import spark.Route
@@ -15,6 +15,8 @@ class RegisterUserHandler(private val userRepository: UserRepository,
                           private val validator: RequestValidator,
                           private val config: Configuration) : Route {
     data class Params(val email: String, val username: String, val password: String, val confirmPassword: String)
+
+    private val observers = LinkedList<Observer>()
 
     override fun handle(req: Request, resp: Response): Any {
         val dataModel = HashMap<String, List<Error>>()
@@ -57,8 +59,18 @@ class RegisterUserHandler(private val userRepository: UserRepository,
                         LocalDateTime.now().plusHours(2)
                 ))
                 resp.cookie("sessionId", sessionId)
+                notifyAllObservers(params.email, params.username)
                 return resp.redirect("/home")
             }
         }
+    }
+
+    fun attachObserver(observer: Observer) {
+        observers.add(observer)
+    }
+
+    private fun notifyAllObservers(email: String, username: String) {
+        observers.forEach { it.onRegister(email, username) }
+        observers.forEach { it.onLogin(username) }
     }
 }
