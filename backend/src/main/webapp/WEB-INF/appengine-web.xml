@@ -17,10 +17,6 @@
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
 
-    <env-variables>
-        <env-var name="SENDGRID_API_KEY" value="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"/>
-    </env-variables>
-
     <sessions-enabled>true</sessions-enabled>
     <threadsafe>true</threadsafe>
     <precompilation-enabled>false</precompilation-enabled>
