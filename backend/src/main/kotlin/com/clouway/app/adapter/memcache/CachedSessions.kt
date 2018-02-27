@@ -2,9 +2,11 @@ package com.clouway.app.adapter.memcache
 
 import com.clouway.app.core.Session
 import com.clouway.app.core.SessionRepository
+import com.google.appengine.api.datastore.DatastoreFailureException
 import com.google.appengine.api.memcache.Expiration
 import com.google.appengine.api.memcache.MemcacheService
 import java.time.LocalDateTime
+import java.util.*
 
 /**
  * @author Stanimir Iliev <stanimir.iliev@clouway.com>
@@ -35,12 +37,10 @@ class CachedSessions constructor(val chain: SessionRepository, val cache: Memcac
         return chain.getSessionsCount(instant)
     }
 
-    override fun terminateSession(sessionId: String): Boolean {
-        if (chain.terminateSession(sessionId)) {
-            cache.delete("SID$sessionId")
-            return true
-        }
-        return false
+    @Throws(DatastoreFailureException::class, ConcurrentModificationException::class)
+    override fun terminateSession(sessionId: String) {
+        chain.terminateSession(sessionId)
+        cache.delete("SID$sessionId")
     }
 
     override fun terminateInactiveSessions(instant: LocalDateTime): Int {

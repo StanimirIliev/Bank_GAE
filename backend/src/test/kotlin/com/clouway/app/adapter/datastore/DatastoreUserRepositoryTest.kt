@@ -18,7 +18,7 @@ class DatastoreUserRepositoryTest {
 
     @Before
     fun setUp() {
-        userRepository = DatastoreUserRepository(dataStoreRule.datastoreTemplate)
+        userRepository = DatastoreUserRepository(dataStoreRule.datastore)
     }
 
     @Test

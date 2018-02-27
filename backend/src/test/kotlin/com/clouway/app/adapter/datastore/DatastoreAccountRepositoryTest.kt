@@ -1,5 +1,6 @@
 package com.clouway.app.adapter.datastore
 
+import com.clouway.app.adapter.validation.ValidationAccountRepository
 import com.clouway.app.core.*
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
@@ -20,8 +21,8 @@ class DatastoreAccountRepositoryTest {
 
     @Before
     fun setUp() {
-        transactionRepository = DatastoreTransactionRepository(dataStoreRule.datastoreTemplate)
-        accountRepository = DatastoreAccountRepository(dataStoreRule.datastoreTemplate, transactionRepository)
+        transactionRepository = DatastoreTransactionRepository(dataStoreRule.datastore)
+        accountRepository = DatastoreAccountRepository(dataStoreRule.datastore, transactionRepository)
     }
 
     @Test
@@ -32,22 +33,10 @@ class DatastoreAccountRepositoryTest {
     }
 
     @Test
-    fun makeAValidWithdraw() {
+    fun makeAWithdraw() {
         val accountId = accountRepository.registerAccount(Account("some fund", userId, Currency.BGN, 50f))
         assertThat(accountRepository.updateBalance(accountId, userId, -20f).isSuccessful, `is`(equalTo(true)))
         assertThat(accountRepository.getUserAccount(userId, accountId)!!.balance, `is`(equalTo(30f)))
-    }
-
-    @Test
-    fun tryToMakeWithdrawGreaterThanBalance() {
-        val accountId = accountRepository.registerAccount(Account("some fund", userId, Currency.BGN, 0f))
-        assertThat(accountRepository.updateBalance(accountId, userId, -20f).isSuccessful, `is`(equalTo(false)))
-        assertThat(accountRepository.getUserAccount(userId, accountId)!!.balance, `is`(equalTo(0f)))
-    }
-
-    @Test
-    fun tryToMakeTransactionWithUnregisteredAccountId() {
-        assertThat(accountRepository.updateBalance(-1L, -1L, 20f).isSuccessful, `is`(equalTo(false)))
     }
 
     @Test
@@ -60,7 +49,7 @@ class DatastoreAccountRepositoryTest {
 
             override fun getTransactions(userId: Long): List<Transaction> = emptyList()
         }
-        val fakeAccountRepository = DatastoreAccountRepository(dataStoreRule.datastoreTemplate, mockTransactionRepository)
+        val fakeAccountRepository = DatastoreAccountRepository(dataStoreRule.datastore, mockTransactionRepository)
         val accountId = fakeAccountRepository.registerAccount(Account("some fund", userId, Currency.BGN, 0f))
         fakeAccountRepository.updateBalance(accountId, userId, 30f)
     }
@@ -110,25 +99,9 @@ class DatastoreAccountRepositoryTest {
     }
 
     @Test
-    fun tryToGetUnregisteredAccount() {
-        assertThat(accountRepository.getUserAccount(1L, 1L), `is`(nullValue()))
-    }
-
-    @Test
-    fun tryToGetRegisteredAccountOfOtherUser() {
-        val accountId = accountRepository.registerAccount(Account("Some fund", userId, Currency.BGN, 0f))
-        assertThat(accountRepository.getUserAccount(userId + 1L, accountId), `is`(nullValue()))
-    }
-
-    @Test
     fun removeAccountThatWasRegistered() {
         val accountId = accountRepository.registerAccount(Account("Fund for something", userId, Currency.BGN, 0f))
         assertThat(accountRepository.removeAccount(accountId, userId).isSuccessful, `is`(equalTo(true)))
         assertThat(accountRepository.getUserAccount(userId, accountId), `is`(nullValue()))
-    }
-
-    @Test
-    fun tryToRemoveUnregisteredAccount() {
-        assertThat(accountRepository.removeAccount(-1L, -1L).isSuccessful, `is`(equalTo(false)))
     }
 }

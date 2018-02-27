@@ -2,14 +2,14 @@ package com.clouway.app.adapter.datastore
 
 import com.clouway.app.core.Session
 import com.clouway.app.core.SessionRepository
-import com.clouway.app.datastore.core.DatastoreTemplate
 import com.clouway.app.datastore.core.EntityMapper
-import com.google.appengine.api.datastore.Entity
-import com.google.appengine.api.datastore.KeyFactory
+import com.google.appengine.api.datastore.*
 import java.time.LocalDateTime
 import java.util.*
 
-class DatastoreSessionRepository(private val datastoreTemplate: DatastoreTemplate) : SessionRepository {
+class DatastoreSessionRepository(private val datastore: DatastoreService) : SessionRepository {
+
+    private val fetchOptions = FetchOptions.Builder.withDefaults()
 
     override fun registerSession(session: Session): String? {
         val id = UUID.randomUUID().toString()
@@ -17,13 +17,11 @@ class DatastoreSessionRepository(private val datastoreTemplate: DatastoreTemplat
         entity.setProperty("UserId", session.userId)
         entity.setProperty("CreatedOn", session.createdOn.toString())
         entity.setProperty("ExpiresAt", session.expiresAt.toString())
-        return datastoreTemplate.insert(entity)?.name
+        return datastore.put(entity)?.name
     }
 
     override fun getSessionAvailableAt(sessionId: String, instant: LocalDateTime): Session? {
-        val allEntities = datastoreTemplate.fetch("Sessions", null, object : EntityMapper<Entity> {
-            override fun fetch(entity: Entity): Entity = entity
-        })
+        val allEntities = datastore.prepare(Query("Sessions")).asList(fetchOptions)
         val desiredEntity = allEntities.find {
             it.key.name == sessionId && LocalDateTime.parse(it.getProperty("ExpiresAt").toString()).isAfter(instant)
         } ?: return null
@@ -35,35 +33,48 @@ class DatastoreSessionRepository(private val datastoreTemplate: DatastoreTemplat
     }
 
     override fun getSessionsCount(instant: LocalDateTime): Int {
-        val sessions = datastoreTemplate.fetch("Sessions", null, object : EntityMapper<Session> {
-            override fun fetch(entity: Entity): Session {
-                return Session(
-                        entity.getProperty("UserId").toString().toLong(),
-                        LocalDateTime.parse(entity.getProperty("CreatedOn").toString()),
-                        LocalDateTime.parse(entity.getProperty("ExpiresAt").toString())
-                )
-            }
-        })
+        val entityList = datastore.prepare(Query("Sessions")).asList(fetchOptions)
+        val sessions = LinkedList<Session>()
+        val sessionMapper =
+                object : EntityMapper<Session> {
+                    override fun fetch(entity: Entity): Session {
+                        return Session(
+                                entity.getProperty("UserId").toString().toLong(),
+                                LocalDateTime.parse(entity.getProperty("CreatedOn").toString()),
+                                LocalDateTime.parse(entity.getProperty("ExpiresAt").toString())
+                        )
+                    }
+                }
+        entityList.forEach {
+            sessions.add(sessionMapper.fetch(it))
+        }
         return sessions.filter { it.expiresAt.isAfter(instant) }.count()
     }
 
-    override fun terminateSession(sessionId: String): Boolean {
+    @Throws(DatastoreFailureException::class, ConcurrentModificationException::class)
+    override fun terminateSession(sessionId: String) {
         val key = KeyFactory.createKey("Sessions", sessionId)
-        return datastoreTemplate.delete(key)
+        datastore.delete(key)
     }
 
     override fun terminateInactiveSessions(instant: LocalDateTime): Int {
-        data class PairSessionSessionId(val session: Session, val sessionId: String)
+        data class PairSessionSID(val session: Session, val sessionId: String)
 
-        val sessions = datastoreTemplate.fetch("Sessions", null, object : EntityMapper<PairSessionSessionId> {
-            override fun fetch(entity: Entity): PairSessionSessionId {
-                return PairSessionSessionId(Session(
-                        entity.getProperty("UserId").toString().toLong(),
-                        LocalDateTime.parse(entity.getProperty("CreatedOn").toString()),
-                        LocalDateTime.parse(entity.getProperty("ExpiresAt").toString())
-                ), entity.key.name)
-            }
-        })
+        val pairSessionSIDMapper =
+                object : EntityMapper<PairSessionSID> {
+                    override fun fetch(entity: Entity): PairSessionSID {
+                        return PairSessionSID(Session(
+                                entity.getProperty("UserId").toString().toLong(),
+                                LocalDateTime.parse(entity.getProperty("CreatedOn").toString()),
+                                LocalDateTime.parse(entity.getProperty("ExpiresAt").toString())
+                        ), entity.key.name)
+                    }
+                }
+        val entityList = datastore.prepare(Query("Sessions")).asList(fetchOptions)
+        val sessions = LinkedList<PairSessionSID>()
+        entityList.forEach {
+            sessions.add(pairSessionSIDMapper.fetch(it))
+        }
         val inactiveSessions = sessions.filter { it.session.expiresAt.isBefore(instant) }
         inactiveSessions.forEach { terminateSession(it.sessionId) }
         return inactiveSessions.count()

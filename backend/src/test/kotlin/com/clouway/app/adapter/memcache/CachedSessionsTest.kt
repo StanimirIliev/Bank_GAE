@@ -61,7 +61,6 @@ class CachedSessionsTest {
                 exactly(1).of(sessionRepository).getSessionAvailableAt("SID", instant)
                 will(returnValue(session))
                 exactly(1).of(sessionRepository).terminateSession("SID")
-                will(returnValue(true))
             }
         })
         val chainedSessionRepository = CachedSessions(sessionRepository, MemcacheServiceFactory.getMemcacheService())

@@ -1,3 +1,5 @@
 package com.clouway.app.core.httpresponse
 
-data class GetTransactionsCountResponseDto(val transactionsCount: Int)
+import java.io.Serializable
+
+data class GetTransactionsCountResponseDto(val transactionsCount: Int): Serializable

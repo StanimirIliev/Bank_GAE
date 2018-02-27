@@ -23,7 +23,7 @@ class DatastoreTransactionRepositoryTest {
 
     @Before
     fun setUp() {
-        transactionRepository = DatastoreTransactionRepository(dataStoreRule.datastoreTemplate)
+        transactionRepository = DatastoreTransactionRepository(dataStoreRule.datastore)
     }
 
     @Test
