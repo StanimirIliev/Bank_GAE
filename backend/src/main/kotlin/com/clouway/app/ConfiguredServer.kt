@@ -41,7 +41,7 @@ class ConfiguredServer {
         val accountRepository = DatastoreAccountRepository(datastoreTemplate, transactionRepository)
         val emailSender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
         val mainObserver = MainObserver(
-                EmailSenderObserver(emailSender, logger),
+                EmailSenderObserver(),
                 LogsObserver(logger)
         )
 
@@ -70,6 +70,7 @@ class ConfiguredServer {
         }
 
         val transformer = JsonTransformer()
+        post("/tasks/emailSender", RegistrationEmailSendingRoute(emailSender, logger))
         get("/index", IndexPageRoute())
         post("/login", LoginUserHandler(userRepository, sessionRepository, mainObserver, config))
         get("/login", LoginPageRoute(config))
