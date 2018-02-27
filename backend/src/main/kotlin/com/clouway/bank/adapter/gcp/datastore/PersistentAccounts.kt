@@ -115,4 +115,3 @@ class PersistentAccounts(
         return accountsList.find { it.id == accountId }?.balance
     }
 }
-

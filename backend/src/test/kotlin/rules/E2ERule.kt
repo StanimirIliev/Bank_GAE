@@ -18,6 +18,7 @@ import org.junit.rules.ExternalResource
 import spark.Filter
 import spark.Spark
 import java.io.File
+import java.lang.Thread.sleep
 import java.time.LocalDateTime
 import java.util.logging.Handler
 import java.util.logging.Level
