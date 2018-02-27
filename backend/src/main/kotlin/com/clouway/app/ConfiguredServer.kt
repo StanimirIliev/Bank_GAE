@@ -17,11 +17,13 @@ import freemarker.template.TemplateExceptionHandler
 import org.apache.log4j.Logger
 import spark.Spark.*
 import java.io.File
-import java.io.FileReader
+import java.nio.charset.Charset
 
 class ConfiguredServer {
     fun start() {
-        val sendgridApiKey = FileReader("sendgrid.env").readText()
+        val sendgridApiKey = ConfiguredServer::class.java.getResourceAsStream("sendgrid.env")
+                .reader(Charset.defaultCharset())
+                .readText()
 
         val logger = Logger.getLogger("ConfiguredServer")
         val config = Configuration(Configuration.VERSION_2_3_23)
@@ -41,7 +43,7 @@ class ConfiguredServer {
         val accountRepository = DatastoreAccountRepository(datastoreTemplate, transactionRepository)
         val emailSender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
         val mainObserver = MainObserver(
-                EmailSenderObserver(emailSender, logger),
+                EmailSenderObserver(),
                 LogsObserver(logger)
         )
 
@@ -70,6 +72,7 @@ class ConfiguredServer {
         }
 
         val transformer = JsonTransformer()
+        post("/tasks/emailSender", RegistrationEmailSendingRoute(emailSender, logger))
         get("/index", IndexPageRoute())
         post("/login", LoginUserHandler(userRepository, sessionRepository, mainObserver, config))
         get("/login", LoginPageRoute(config))
