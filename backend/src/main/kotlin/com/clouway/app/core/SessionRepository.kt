@@ -1,6 +1,8 @@
 package com.clouway.app.core
 
+import com.google.appengine.api.datastore.DatastoreFailureException
 import java.time.LocalDateTime
+import java.util.*
 
 interface SessionRepository {
 
@@ -29,9 +31,9 @@ interface SessionRepository {
     /**
      * Deletes session from the DB
      * @param sessionId the id of the session which should be deleted
-     * @return true if the operation was successful, false if error occurred
      */
-    fun terminateSession(sessionId: String): Boolean
+    @Throws(DatastoreFailureException::class, ConcurrentModificationException::class)
+    fun terminateSession(sessionId: String)
 
     /**
      * Deletes all inactive sessions from the DB

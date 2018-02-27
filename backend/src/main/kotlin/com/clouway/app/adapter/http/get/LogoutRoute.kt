@@ -24,6 +24,12 @@ class LogoutRoute(
             logger.error("Error occurred while getting the cookie sessionId")
             "{\"message\":\"Error occurred while getting the cookie sessionId\"}"
         } else {
+            try {
+                sessionRepository.terminateSession(req.cookie("sessionId"))
+                req.session().invalidate()
+                resp.redirect("/index")
+            } catch(e: Exception) {
+                logger.error("Unable to terminate session", e)
             val session = sessionRepository.getSessionAvailableAt(sessionId, LocalDateTime.now())
             var username = userRepository.getUsername(session?.userId ?: -1L) ?: "Someone"
             if (!sessionRepository.terminateSession(sessionId)) {

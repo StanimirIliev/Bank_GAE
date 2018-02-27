@@ -22,7 +22,7 @@ class DatastoreSessionRepositoryTest {
 
     @Before
     fun setUp() {
-        sessionRepository = DatastoreSessionRepository(dataStoreRule.datastoreTemplate)
+        sessionRepository = DatastoreSessionRepository(dataStoreRule.datastore)
     }
 
     @Test
@@ -80,13 +80,8 @@ class DatastoreSessionRepositoryTest {
         val expiresAt = LocalDateTime.of(2018, 1, 12, 15, 10)
         val instant = LocalDateTime.of(2018, 1, 12, 14, 25)
         val sessionId = sessionRepository.registerSession(Session(userId, createdOn, expiresAt))
-        assertThat(sessionRepository.terminateSession(sessionId!!), `is`(equalTo(true)))
+        sessionRepository.terminateSession(sessionId!!)
         assertThat(sessionRepository.getSessionAvailableAt(sessionId, instant), `is`(nullValue()))
-    }
-
-    @Test
-    fun tryToTerminateSessionThatWasNotRegistered() {
-        assertThat(sessionRepository.terminateSession("notExistingId"), `is`(equalTo(false)))
     }
 
     @Test

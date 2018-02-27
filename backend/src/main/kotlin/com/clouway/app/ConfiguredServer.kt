@@ -9,7 +9,9 @@ import com.clouway.app.adapter.http.delete.RemoveAccountRoute
 import com.clouway.app.adapter.http.get.*
 import com.clouway.app.adapter.http.post.*
 import com.clouway.app.adapter.memcache.CachedSessions
-import com.clouway.app.datastore.NoSqlDatastoreTemplate
+import com.clouway.app.adapter.transaction.TransactionAccountRepository
+import com.clouway.app.adapter.transaction.TransactionTransactionRepository
+import com.clouway.app.adapter.validation.ValidationAccountRepository
 import com.google.appengine.api.datastore.DatastoreServiceFactory
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 import freemarker.template.Configuration
@@ -31,21 +33,30 @@ class ConfiguredServer {
         config.templateExceptionHandler = TemplateExceptionHandler.RETHROW_HANDLER
         config.logTemplateExceptions = false
 
-        val datastoreTemplate = NoSqlDatastoreTemplate(DatastoreServiceFactory.getDatastoreService())
+        val datastore = DatastoreServiceFactory.getDatastoreService()
 
         val sessionRepository = CachedSessions(
-                DatastoreSessionRepository(datastoreTemplate),
+                DatastoreSessionRepository(datastore),
                 MemcacheServiceFactory.getMemcacheService()
         )
-        val transactionRepository = DatastoreTransactionRepository(datastoreTemplate)
-        val accountRepository = DatastoreAccountRepository(datastoreTemplate, transactionRepository)
+        val transactionRepository = TransactionTransactionRepository(
+                DatastoreTransactionRepository(datastore),
+                datastore
+        )
+        val accountRepository = ValidationAccountRepository(
+                TransactionAccountRepository(
+                        DatastoreAccountRepository(datastore, transactionRepository),
+                        datastore,
+                        transactionRepository
+                ),
+                datastore
+        )
         val emailSender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
         val mainObserver = MainObserver(
                 EmailSenderObserver(),
                 LogsObserver(logger)
         )
-
-        val userRepository = DatastoreUserRepository(datastoreTemplate)
+        val userRepository = DatastoreUserRepository(datastore)
         val compositeValidator = CompositeValidator(
                 RegexValidationRule(
                         "email",

@@ -18,7 +18,7 @@ class TransactionsTest {
 
     @Rule
     @JvmField
-    val helper = E2EHelper(ConfiguredServer(), false)
+    val helper = E2EHelper(ConfiguredServer(), true)
 
     private val primaryUrl = helper.primaryUrl
     private val gson = helper.gson

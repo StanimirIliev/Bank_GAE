@@ -17,6 +17,7 @@ import org.junit.rules.ExternalResource
 import spark.Filter
 import spark.Spark
 import java.io.File
+import java.lang.Thread.sleep
 import java.time.LocalDateTime
 import java.util.logging.Handler
 import java.util.logging.Level
@@ -55,14 +56,14 @@ class E2EHelper(private val server: ConfiguredServer, enableLogging: Boolean) : 
     override fun before() {
         Spark.port(8080)
         server.start()
-        Spark.awaitInitialization()
         Spark.before(Filter { _, _ -> helper.setUp() })
         Spark.after(Filter { _, _ -> helper.tearDown() })
+        Spark.awaitInitialization()
     }
 
     override fun after() {
         Spark.stop()
-        Thread.currentThread().join(10)// waits the server to stop
+        Thread.currentThread().join(100)// waits the server to stop
         File(configDatastore.backingStoreLocation).delete()
     }
 
