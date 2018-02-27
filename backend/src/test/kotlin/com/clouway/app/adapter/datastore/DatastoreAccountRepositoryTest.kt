@@ -73,11 +73,24 @@ class DatastoreAccountRepositoryTest {
     }
 
     @Test
+    fun getAllActiveAccountsByUserId() {
+        val account1 = Account("Fund for something", userId, Currency.BGN, 0f)
+        val account2 = Account("Fund for other something", userId, Currency.BGN, 0f)
+        val accountId1 = accountRepository.registerAccount(account1)
+        val accountId2 = accountRepository.registerAccount(account2)
+        assertThat(accountRepository.getActiveAccounts(userId), `is`(equalTo(listOf(
+                account1.apply { id = accountId1 },
+                account2.apply { id = accountId2 }
+        ))))
+    }
+
+    @Test
     fun getAllAccountsByUserId() {
         val account1 = Account("Fund for something", userId, Currency.BGN, 0f)
         val account2 = Account("Fund for other something", userId, Currency.BGN, 0f)
         val accountId1 = accountRepository.registerAccount(account1)
         val accountId2 = accountRepository.registerAccount(account2)
+        accountRepository.removeAccount(accountId1, userId)
         assertThat(accountRepository.getAllAccounts(userId), `is`(equalTo(listOf(
                 account1.apply { id = accountId1 },
                 account2.apply { id = accountId2 }
@@ -86,7 +99,7 @@ class DatastoreAccountRepositoryTest {
 
     @Test
     fun tryToGetAllAccountsByUnregisteredUserId() {
-        assertThat(accountRepository.getAllAccounts(1L), `is`(equalTo(emptyList())))
+        assertThat(accountRepository.getActiveAccounts(1L), `is`(equalTo(emptyList())))
     }
 
     @Test

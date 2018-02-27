@@ -27,7 +27,14 @@ interface AccountRepository {
     fun updateBalance(accountId: Long, userId: Long, amount: Float): OperationResponse
 
     /**
-     * Gets all accounts by userId
+     * Gets all accounts that has not been deleted by userId
+     * @param userId the id of the user
+     * @return list with all accounts registered on this userId
+     */
+    fun getActiveAccounts(userId: Long): List<Account>
+
+    /**
+     * Gets all accounts including these that was deleted
      * @param userId the id of the user
      * @return list with all accounts registered on this userId
      */

@@ -76,11 +76,16 @@ class DatastoreAccountRepository(
         }
     }
 
-    override fun getAllAccounts(userId: Long): List<Account> {
+    override fun getActiveAccounts(userId: Long): List<Account> {
         val filter1 = FilterPredicate("UserId", FilterOperator.EQUAL, userId)
         val filter2 = FilterPredicate("DeletedOn", FilterOperator.EQUAL, null)
         val compositeFilter = Query.CompositeFilter(CompositeFilterOperator.AND, listOf(filter1, filter2))
         return datastoreTemplate.fetch(compositeFilter, "Accounts", accountMapper)
+    }
+
+    override fun getAllAccounts(userId: Long): List<Account> {
+        val filter = FilterPredicate("UserId", FilterOperator.EQUAL, userId)
+        return datastoreTemplate.fetch("Accounts", filter, accountMapper)
     }
 
     override fun removeAccount(accountId: Long, userId: Long): OperationResponse {

@@ -16,7 +16,7 @@ class NewAccountRoute(private val accountRepository: AccountRepository) : Secure
         val data = Gson().fromJson(req.body(), Wrapper::class.java)
         val title = data.params.title
         val currency = data.params.currency
-        val accounts = accountRepository.getAllAccounts(session.userId)
+        val accounts = accountRepository.getActiveAccounts(session.userId)
         when {
             title == null || currency == null -> {
                 resp.status(400)

@@ -9,6 +9,6 @@ import spark.Response
 
 class AccountsListRoute(private val accountRepository: AccountRepository) : SecuredRoute {
     override fun handle(req: Request, resp: Response, session: Session): Any =
-            GetAccountsListResponseDto(accountRepository.getAllAccounts(session.userId))
+            GetAccountsListResponseDto(accountRepository.getActiveAccounts(session.userId))
 }
 
