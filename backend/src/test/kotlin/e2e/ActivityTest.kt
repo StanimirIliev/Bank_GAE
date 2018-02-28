@@ -1,6 +1,7 @@
 package e2e
 
 import com.clouway.app.ConfiguredServer
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetActivityResponseDto
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpHeaders
@@ -39,7 +40,10 @@ class ActivityTest {
         ).activity
         assertThat(activity, `is`(equalTo(0)))
         // register user and check again for activity
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         resp = req.execute()
         assertThat(resp.statusCode, `is`(equalTo(200)))
         activity = gson.fromJson(

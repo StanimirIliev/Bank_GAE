@@ -1,6 +1,7 @@
 package e2e
 
 import com.clouway.app.ConfiguredServer
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
 import com.clouway.app.core.httpresponse.GetListAccountTransactionsResponseDto
 import com.clouway.app.core.httpresponse.GetTransactionsCountResponseDto
@@ -27,7 +28,10 @@ class TransactionsTest {
 
     @Test
     fun getTransactionsCount() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         // assert that there is no transactions yet
         req = requestFactory.buildGetRequest(GenericUrl("$primaryUrl/v1/transactions/count"))
         req.headers = HttpHeaders().setCookie(sessionId)
@@ -54,7 +58,10 @@ class TransactionsTest {
 
     @Test
     fun getTransactionsFromSpecificPage() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         // register transaction
         registerTransaction(sessionId)
         // get 1 transaction from page 1

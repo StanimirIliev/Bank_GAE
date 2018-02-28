@@ -1,5 +1,6 @@
 package com.clouway.app.adapter.datastore
 
+import com.clouway.app.core.User
 import com.clouway.app.core.UserRepository
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
@@ -22,25 +23,30 @@ class DatastoreUserRepositoryTest {
 
     @Test
     fun tryToRegisterAlreadyRegisteredUser() {
-        userRepository.registerUser("user123", "password456")
-        assertThat(userRepository.registerUser("user123", "password789"),
+        userRepository.registerUser(User("someone@example.com", "user123", "password456"))
+        assertThat(userRepository.registerUser(User("someone@example.com", "user123", "password456")),
                 `is`(equalTo(-1L)))
     }
 
     @Test
-    fun authenticateUserThatWasRegistered() {
-        userRepository.registerUser("user123", "password789")
-        assertThat(userRepository.authenticate("user123", "password789"), `is`(equalTo(true)))
+    fun authenticateUserThatWasRegisteredByItsUsername() {
+        userRepository.registerUser(User("someone@example.com", "user123", "password456"))
+        assertThat(userRepository.authenticateByUsername("user123", "password456"), `is`(equalTo(true)))
+    }
+
+    @Test
+    fun assertThatEmailIsSentOnRegistration() {
+        userRepository.registerUser(User("someone@example.com", "user123", "password456"))
     }
 
     @Test
     fun tryToAuthenticateUnregisteredUser() {
-        assertThat(userRepository.authenticate("user123", "password456"), `is`(equalTo(false)))
+        assertThat(userRepository.authenticateByUsername("user123", "password456"), `is`(equalTo(false)))
     }
 
     @Test
     fun getUsernameOfRegisteredUserByItsId() {
-        val userId = userRepository.registerUser("user123", "password789")
+        val userId = userRepository.registerUser(User("someone@example.com", "user123", "password456"))
         assertThat(userRepository.getUsername(userId), `is`(equalTo("user123")))
     }
 
@@ -51,7 +57,7 @@ class DatastoreUserRepositoryTest {
 
     @Test
     fun getIdOfRegisteredUserByItsUsername() {
-        val userId = userRepository.registerUser("user123", "password789")
+        val userId = userRepository.registerUser(User("someone@example.com", "user123", "password456"))
         assertThat(userRepository.getUserId("user123"), `is`(equalTo(userId)))
     }
 

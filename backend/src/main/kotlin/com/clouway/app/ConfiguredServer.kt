@@ -17,9 +17,12 @@ import freemarker.template.TemplateExceptionHandler
 import org.apache.log4j.Logger
 import spark.Spark.*
 import java.io.File
+import java.io.FileReader
 
 class ConfiguredServer {
     fun start() {
+        val sendgridApiKey = FileReader("sendgrid.env").readText()
+
         val logger = Logger.getLogger("ConfiguredServer")
         val config = Configuration(Configuration.VERSION_2_3_23)
         val file = File(ConfiguredServer::class.java.getResource("freemarker/templates/").file)
@@ -36,8 +39,19 @@ class ConfiguredServer {
         )
         val transactionRepository = DatastoreTransactionRepository(datastoreTemplate)
         val accountRepository = DatastoreAccountRepository(datastoreTemplate, transactionRepository)
+        val emailSender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
+        val mainObserver = MainObserver(
+                EmailSenderObserver(),
+                LogsObserver(logger)
+        )
+
         val userRepository = DatastoreUserRepository(datastoreTemplate)
         val compositeValidator = CompositeValidator(
+                RegexValidationRule(
+                        "email",
+                        "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
+                        "Incorrect email.\n"
+                ),
                 RegexValidationRule(
                         "username",
                         "[a-zA-Z\\d]{4,15}",
@@ -56,13 +70,14 @@ class ConfiguredServer {
         }
 
         val transformer = JsonTransformer()
+        post("/tasks/emailSender", RegistrationEmailSendingRoute(emailSender, logger))
         get("/index", IndexPageRoute())
-        post("/login", LoginUserHandler(userRepository, sessionRepository, config))
+        post("/login", LoginUserHandler(userRepository, sessionRepository, mainObserver, config))
         get("/login", LoginPageRoute(config))
         get("/registration", RegistrationPageRoute(config))
-        post("/registration", RegisterUserHandler(userRepository, sessionRepository, compositeValidator, config))
+        post("/registration", RegisterUserHandler(userRepository, sessionRepository, mainObserver, compositeValidator, config))
         get("/home", Secured(sessionRepository, HomePageRoute(), logger))
-        get("/logout", LogoutRoute(sessionRepository, logger), transformer)
+        get("/logout", LogoutRoute(sessionRepository, userRepository, mainObserver, logger), transformer)
         path("/v1") {
             path("/accounts") {
                 get("", Secured(sessionRepository, AccountsListRoute(accountRepository), logger), transformer)
