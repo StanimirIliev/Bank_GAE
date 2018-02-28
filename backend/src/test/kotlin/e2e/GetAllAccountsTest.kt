@@ -2,6 +2,7 @@ package e2e
 
 import com.clouway.app.ConfiguredServer
 import com.clouway.app.core.Currency
+import com.clouway.app.core.User
 import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
 import com.google.api.client.http.*
 import helpers.E2EHelper
@@ -26,7 +27,10 @@ class GetAllAccountsTest {
 
     @Test
     fun getAllAccountsOfUserThatWasRegistered() {
-        val sessionId = helper.registerUserAndGetSessionId("$primaryUrl/registration", "user", "password")
+        val sessionId = helper.registerUserAndGetSessionId(
+                "$primaryUrl/registration",
+                User("someone@example.com", "user", "password")
+        )
         // create account
         val accountTitle = "Fund for something"
         val accountCurrency = Currency.BGN

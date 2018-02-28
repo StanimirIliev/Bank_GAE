@@ -1,6 +1,7 @@
 package helpers
 
 import com.clouway.app.ConfiguredServer
+import com.clouway.app.core.User
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpTransport
@@ -65,8 +66,8 @@ class E2EHelper(private val server: ConfiguredServer, enableLogging: Boolean) : 
         File(configDatastore.backingStoreLocation).delete()
     }
 
-    fun registerUserAndGetSessionId(url: String, username: String, password: String): String {
-        val requestBody = "username=$username&password=$password&confirmPassword=$password"
+    fun registerUserAndGetSessionId(url: String, user: User): String {
+        val requestBody = "email=${user.email}&username=${user.username}&password=${user.password}&confirmPassword=${user.password}"
         val postRequest = requestFactory.buildPostRequest(
                 GenericUrl(url),
                 ByteArrayContent.fromString("application/json", requestBody)
