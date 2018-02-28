@@ -8,7 +8,7 @@ import com.clouway.bank.adapter.gcp.datastore.PersistentSessions
 import com.clouway.bank.adapter.gcp.datastore.PersistentTransactions
 import com.clouway.bank.adapter.gcp.datastore.PersistentUsers
 import com.clouway.bank.adapter.gcp.memcache.CachedSessions
-import com.clouway.bank.adapter.gcp.taskqueue.PushEventUserSender
+import com.clouway.bank.adapter.gcp.pubsub.PushUserEvents
 import com.clouway.bank.adapter.gcp.transaction.SafeAccountsProxy
 import com.clouway.bank.adapter.gcp.transaction.SafeTransactionsProxy
 import com.clouway.bank.adapter.gcp.transaction.SafeUsersProxy
@@ -64,7 +64,7 @@ class AppBootstrap {
         )
         val emailSender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
         val mainObserver = CompositeUserEventHandler(
-                PushEventUserSender(),
+                PushUserEvents(),
                 UserEventLogger(logger)
         )
         val userRepository = ValidationUsersProxy(
