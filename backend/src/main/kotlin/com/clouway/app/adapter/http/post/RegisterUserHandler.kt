@@ -58,7 +58,6 @@ class RegisterUserHandler(private val userRepository: UserRepository,
                         LocalDateTime.now().plusHours(2)
                 ))
                 resp.cookie("sessionId", sessionId)
-                observer.onRegister(params.email, params.username)
                 observer.onLogin(params.username)
                 return resp.redirect("/home")
             }

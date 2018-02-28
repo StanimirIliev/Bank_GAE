@@ -12,7 +12,7 @@ import java.util.*
  * @author Stanimir Iliev <stanimir.iliev@clouway.com>
  */
 
-class CachedSessions constructor(val chain: SessionRepository, val cache: MemcacheService) : SessionRepository {
+class CachedSessionRepository constructor(val chain: SessionRepository, val cache: MemcacheService) : SessionRepository {
     override fun registerSession(session: Session): String? {
         val sessionId = chain.registerSession(session) ?: return null
         cache.put("SID$sessionId", session, Expiration.byDeltaSeconds(2 * 60 * 60))

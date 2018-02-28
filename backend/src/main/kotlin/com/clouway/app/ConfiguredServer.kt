@@ -8,10 +8,12 @@ import com.clouway.app.adapter.http.Secured
 import com.clouway.app.adapter.http.delete.RemoveAccountRoute
 import com.clouway.app.adapter.http.get.*
 import com.clouway.app.adapter.http.post.*
-import com.clouway.app.adapter.memcache.CachedSessions
+import com.clouway.app.adapter.memcache.CachedSessionRepository
 import com.clouway.app.adapter.transaction.TransactionAccountRepository
 import com.clouway.app.adapter.transaction.TransactionTransactionRepository
+import com.clouway.app.adapter.transaction.TransactionUserRepository
 import com.clouway.app.adapter.validation.ValidationAccountRepository
+import com.clouway.app.adapter.validation.ValidationUserRepository
 import com.google.appengine.api.datastore.DatastoreServiceFactory
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 import freemarker.template.Configuration
@@ -19,11 +21,13 @@ import freemarker.template.TemplateExceptionHandler
 import org.apache.log4j.Logger
 import spark.Spark.*
 import java.io.File
-import java.io.FileReader
+import java.nio.charset.Charset
 
 class ConfiguredServer {
     fun start() {
-        val sendgridApiKey = FileReader("sendgrid.env").readText()
+        val sendgridApiKey = ConfiguredServer::class.java.getResourceAsStream("sendgrid.env")
+                .reader(Charset.defaultCharset())
+                .readText()
 
         val logger = Logger.getLogger("ConfiguredServer")
         val config = Configuration(Configuration.VERSION_2_3_23)
@@ -35,7 +39,7 @@ class ConfiguredServer {
 
         val datastore = DatastoreServiceFactory.getDatastoreService()
 
-        val sessionRepository = CachedSessions(
+        val sessionRepository = CachedSessionRepository(
                 DatastoreSessionRepository(datastore),
                 MemcacheServiceFactory.getMemcacheService()
         )
@@ -56,7 +60,14 @@ class ConfiguredServer {
                 EmailSenderObserver(),
                 LogsObserver(logger)
         )
-        val userRepository = DatastoreUserRepository(datastore)
+        val userRepository = ValidationUserRepository(
+                TransactionUserRepository(
+                        DatastoreUserRepository(datastore, mainObserver),
+                        datastore,
+                        mainObserver
+                ),
+                datastore
+        )
         val compositeValidator = CompositeValidator(
                 RegexValidationRule(
                         "email",

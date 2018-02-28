@@ -2,7 +2,7 @@ package com.clouway.app.adapter.datastore
 
 import com.clouway.app.core.*
 import com.clouway.app.core.Currency
-import com.clouway.app.core.ErrorType.*
+import com.clouway.app.core.ErrorType.INCORRECT_ID
 import com.clouway.app.datastore.core.EntityMapper
 import com.google.appengine.api.datastore.DatastoreService
 import com.google.appengine.api.datastore.Entity
@@ -70,7 +70,14 @@ class DatastoreAccountRepository(
 
     override fun getAllAccounts(userId: Long): List<Account> {
         val filter = FilterPredicate("UserId", FilterOperator.EQUAL, userId)
-        return datastoreTemplate.fetch("Accounts", filter, accountMapper)
+        val query = Query("Accounts")
+        query.filter = filter
+        val entityList = datastore.prepare(query).asList(fetchOptions)
+        val list = LinkedList<Account>()
+        entityList.forEach {
+            list.add(accountMapper.fetch(it))
+        }
+        return list
     }
 
     override fun removeAccount(accountId: Long, userId: Long): OperationResponse {
