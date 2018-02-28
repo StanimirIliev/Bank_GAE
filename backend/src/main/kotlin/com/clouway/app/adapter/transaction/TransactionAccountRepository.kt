@@ -69,6 +69,10 @@ class TransactionAccountRepository(
         return origin.getUserAccount(userId, accountId)
     }
 
+    override fun getActiveAccounts(userId: Long): List<Account> {
+        return origin.getActiveAccounts(userId)
+    }
+
     private fun getBalance(accountId: Long): Float? {
         val filter = Query.FilterPredicate("DeletedOn", Query.FilterOperator.EQUAL, null)
         val query = Query("Accounts")

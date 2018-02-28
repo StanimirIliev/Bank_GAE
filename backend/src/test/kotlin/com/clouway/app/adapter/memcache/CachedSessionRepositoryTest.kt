@@ -12,7 +12,7 @@ import org.junit.Test
 import rules.DatastoreRule
 import java.time.LocalDateTime
 
-class CachedSessionsTest {
+class CachedSessionRepositoryTest {
 
     @Rule
     @JvmField
@@ -35,7 +35,7 @@ class CachedSessionsTest {
                 never(sessionRepository).getSessionAvailableAt("SID", instant)
             }
         })
-        val chainedSessionRepository = CachedSessions(sessionRepository, MemcacheServiceFactory.getMemcacheService())
+        val chainedSessionRepository = CachedSessionRepository(sessionRepository, MemcacheServiceFactory.getMemcacheService())
         chainedSessionRepository.registerSession(session)
         assertThat(chainedSessionRepository.getSessionAvailableAt("SID", instant), `is`(equalTo(session)))
     }
@@ -48,7 +48,7 @@ class CachedSessionsTest {
                 will(returnValue(session))
             }
         })
-        val chainedSessionRepository = CachedSessions(sessionRepository, MemcacheServiceFactory.getMemcacheService())
+        val chainedSessionRepository = CachedSessionRepository(sessionRepository, MemcacheServiceFactory.getMemcacheService())
         assertThat(chainedSessionRepository.getSessionAvailableAt("SID", instant), `is`(equalTo(session)))
     }
 
@@ -63,7 +63,7 @@ class CachedSessionsTest {
                 exactly(1).of(sessionRepository).terminateSession("SID")
             }
         })
-        val chainedSessionRepository = CachedSessions(sessionRepository, MemcacheServiceFactory.getMemcacheService())
+        val chainedSessionRepository = CachedSessionRepository(sessionRepository, MemcacheServiceFactory.getMemcacheService())
         chainedSessionRepository.registerSession(session)
         chainedSessionRepository.terminateSession("SID")
         assertThat(chainedSessionRepository.getSessionAvailableAt("SID", instant), `is`(equalTo(session)))
@@ -79,7 +79,7 @@ class CachedSessionsTest {
                 never(sessionRepository).getSessionAvailableAt("SID", instant)
             }
         })
-        val chainedSessionRepository = CachedSessions(sessionRepository, MemcacheServiceFactory.getMemcacheService())
+        val chainedSessionRepository = CachedSessionRepository(sessionRepository, MemcacheServiceFactory.getMemcacheService())
         chainedSessionRepository.registerSession(expiredSession)
         assertThat(chainedSessionRepository.getSessionAvailableAt("SID", instant), `is`(nullValue()))
     }

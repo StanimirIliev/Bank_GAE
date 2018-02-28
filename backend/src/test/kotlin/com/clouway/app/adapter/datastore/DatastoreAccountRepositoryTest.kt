@@ -55,13 +55,6 @@ class DatastoreAccountRepositoryTest {
     }
 
     @Test
-    fun tryToAddTwoAccountsForOneUserWithTheSameTitles() {
-        accountRepository.registerAccount(Account("Fund for something", userId, Currency.BGN, 0f))
-        assertThat(accountRepository.registerAccount(
-                Account("Fund for something", userId, Currency.BGN, 0f)), `is`(equalTo(-1L)))
-    }
-
-    @Test
     fun getAllActiveAccountsByUserId() {
         val account1 = Account("Fund for something", userId, Currency.BGN, 0f)
         val account2 = Account("Fund for other something", userId, Currency.BGN, 0f)
@@ -84,11 +77,6 @@ class DatastoreAccountRepositoryTest {
                 account1.apply { id = accountId1 },
                 account2.apply { id = accountId2 }
         ))))
-    }
-
-    @Test
-    fun tryToGetAllAccountsByUnregisteredUserId() {
-        assertThat(accountRepository.getActiveAccounts(1L), `is`(equalTo(emptyList())))
     }
 
     @Test

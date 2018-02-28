@@ -8,4 +8,4 @@ out/
 settings.gradle
 src/main/webapp/favicon.ico
 src/main/webapp/static/
-sendgrid.env
+/src/main/resources/com/clouway/app/sendgrid.env

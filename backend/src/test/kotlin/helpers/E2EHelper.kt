@@ -9,6 +9,7 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper
+import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig
 import com.google.gson.GsonBuilder
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
@@ -45,7 +46,8 @@ class E2EHelper(private val server: ConfiguredServer, enableLogging: Boolean) : 
             .setNoStorage(false)
             .setBackingStoreLocation("tmp/local_db.bin")
     private val configMemcache = LocalMemcacheServiceTestConfig()
-    private val helper = LocalServiceTestHelper(configDatastore, configMemcache)
+    private val configTaskQueue = LocalTaskQueueTestConfig()
+    private val helper = LocalServiceTestHelper(configDatastore, configTaskQueue, configMemcache)
 
     init {
         if (enableLogging) {

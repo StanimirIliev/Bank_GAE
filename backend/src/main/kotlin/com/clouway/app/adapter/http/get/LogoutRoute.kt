@@ -25,21 +25,17 @@ class LogoutRoute(
             "{\"message\":\"Error occurred while getting the cookie sessionId\"}"
         } else {
             try {
+                val session = sessionRepository.getSessionAvailableAt(sessionId, LocalDateTime.now())
+                val username = userRepository.getUsername(session?.userId ?: -1L) ?: "Someone"
                 sessionRepository.terminateSession(req.cookie("sessionId"))
-                req.session().invalidate()
-                resp.redirect("/index")
-            } catch(e: Exception) {
-                logger.error("Unable to terminate session", e)
-            val session = sessionRepository.getSessionAvailableAt(sessionId, LocalDateTime.now())
-            var username = userRepository.getUsername(session?.userId ?: -1L) ?: "Someone"
-            if (!sessionRepository.terminateSession(sessionId)) {
-                resp.type("application/json")
-                resp.status(400)
-                HttpError("Unable to terminate your session.")
-            } else {
                 req.session().invalidate()
                 observer.onLogout(username)
                 resp.redirect("/index")
+            } catch (e: Exception) {
+                logger.error("Unable to terminate session", e)
+                resp.type("application/json")
+                resp.status(400)
+                HttpError("Unable to terminate your session.")
             }
         }
     }
