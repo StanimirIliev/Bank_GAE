@@ -1,18 +1,18 @@
 package e2e
 
-import com.clouway.app.ConfiguredServer
-import com.clouway.app.core.User
-import com.clouway.app.core.httpresponse.GetActivityResponseDto
+import com.clouway.bank.AppBootstrap
+import com.clouway.bank.adapter.http.users.dto.ActivityResponse
+import com.clouway.bank.core.User
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.HttpHeaders
 import com.google.api.client.http.HttpRequest
 import com.google.api.client.http.HttpResponse
-import helpers.E2EHelper
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
+import rules.E2ERule
 import java.nio.charset.Charset
 
 
@@ -20,7 +20,7 @@ class ActivityTest {
 
     @Rule
     @JvmField
-    val helper = E2EHelper(ConfiguredServer(), false)
+    val helper = E2ERule(AppBootstrap(), false)
 
     private val primaryUrl = helper.primaryUrl
     private val gson = helper.gson
@@ -36,7 +36,7 @@ class ActivityTest {
         assertThat(resp.statusCode, `is`(equalTo(200)))
         var activity = gson.fromJson(
                 resp.content.reader(Charset.defaultCharset()),
-                GetActivityResponseDto::class.java
+                ActivityResponse::class.java
         ).activity
         assertThat(activity, `is`(equalTo(0)))
         // register user and check again for activity
@@ -48,7 +48,7 @@ class ActivityTest {
         assertThat(resp.statusCode, `is`(equalTo(200)))
         activity = gson.fromJson(
                 resp.content.reader(Charset.defaultCharset()),
-                GetActivityResponseDto::class.java
+                ActivityResponse::class.java
         ).activity
         assertThat(activity, `is`(equalTo(1)))
         // log out user
@@ -62,7 +62,7 @@ class ActivityTest {
         resp = req.execute()
         activity = gson.fromJson(
                 resp.content.reader(Charset.defaultCharset()),
-                GetActivityResponseDto::class.java
+                ActivityResponse::class.java
         ).activity
         assertThat(activity, `is`(equalTo(0)))
     }
