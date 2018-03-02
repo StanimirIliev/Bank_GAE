@@ -1,21 +1,21 @@
 package e2e
 
-import com.clouway.app.ConfiguredServer
-import com.clouway.app.core.User
-import com.clouway.app.core.httpresponse.GetAccountsListResponseDto
+import com.clouway.bank.AppBootstrap
+import com.clouway.bank.adapter.http.accounts.dto.AccountsListResponse
+import com.clouway.bank.core.User
 import com.google.api.client.http.*
-import helpers.E2EHelper
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
 import org.junit.Test
+import rules.E2ERule
 
 
 class RemoveAccountTest {
 
     @Rule
     @JvmField
-    val helper = E2EHelper(ConfiguredServer(), false)
+    val helper = E2ERule(AppBootstrap(), false)
 
     private val primaryUrl = helper.primaryUrl
     private val gson = helper.gson
@@ -37,13 +37,13 @@ class RemoveAccountTest {
         )
         req.headers = HttpHeaders().setCookie(sessionId)
         req.execute()
-        // get id of the new account
+        // common id of the new account
         req = requestFactory.buildGetRequest(GenericUrl("$primaryUrl/v1/accounts"))
         req.headers = HttpHeaders().setCookie(sessionId)
         resp = req.execute()
         var accountsList = gson.fromJson(
                 resp.content.reader().readText(),
-                GetAccountsListResponseDto::class.java
+                AccountsListResponse::class.java
         ).content
         val id = accountsList.first().id// there is only one account in the datastore no need to search for it
         // delete created account
@@ -56,7 +56,7 @@ class RemoveAccountTest {
         resp = req.execute()
         accountsList = gson.fromJson(
                 resp.content.reader().readText(),
-                GetAccountsListResponseDto::class.java
+                AccountsListResponse::class.java
         ).content
         assertThat(accountsList, `is`(emptyList()))
     }
@@ -79,13 +79,13 @@ class RemoveAccountTest {
         )
         req.headers = HttpHeaders().setCookie(sessionIdOfUser1)
         req.execute()
-        // get id of the new account
+        // common id of the new account
         req = requestFactory.buildGetRequest(GenericUrl("$primaryUrl/v1/accounts"))
         req.headers = HttpHeaders().setCookie(sessionIdOfUser1)
         resp = req.execute()
         var accountsList = gson.fromJson(
                 resp.content.reader().readText(),
-                GetAccountsListResponseDto::class.java
+                AccountsListResponse::class.java
         ).content
         val id = accountsList.first().id// there is only one account in the datastore no need to search for it
         // try to delete account authorized by user1 as user2
@@ -101,7 +101,7 @@ class RemoveAccountTest {
         resp = req.execute()
         accountsList = gson.fromJson(
                 resp.content.reader().readText(),
-                GetAccountsListResponseDto::class.java
+                AccountsListResponse::class.java
         ).content
         assertThat(accountsList, `is`(not(emptyList())))
     }
