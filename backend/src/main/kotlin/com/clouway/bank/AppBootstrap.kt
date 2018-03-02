@@ -64,7 +64,7 @@ class AppBootstrap {
         )
         val emailSender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
         val mainObserver = CompositeUserEventHandler(
-                PushUserEvents(),
+                PushUserEvents(logger),
                 UserEventLogger(logger)
         )
         val userRepository = ValidationUsersProxy(
