@@ -1,4 +1,4 @@
-package com.clouway.bank.core
+package com.clouway.email.sender.core
 
 /**
  * @author Stanimir Iliev <stanimir.iliev@clouway.com>

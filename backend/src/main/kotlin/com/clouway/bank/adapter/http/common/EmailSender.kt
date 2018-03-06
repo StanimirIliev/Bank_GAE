@@ -1,6 +1,6 @@
 package com.clouway.bank.adapter.http.common
 
-import com.clouway.bank.core.EmailSender
+import com.clouway.email.sender.core.EmailSender
 import org.apache.log4j.Logger
 import spark.Request
 import spark.Response

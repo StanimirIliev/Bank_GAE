@@ -1,11 +1,10 @@
 package com.clouway.emailing.adapter.http
 
-import com.clouway.emailing.Sendgrid
+import com.clouway.email.sender.adapter.sendgrid.Sendgrid
 import com.google.api.services.pubsub.model.PubsubMessage
 import com.google.gson.Gson
 import org.apache.log4j.Logger
 import java.io.IOException
-import java.nio.charset.Charset
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -18,11 +17,8 @@ class EmailSenderServlet : HttpServlet() {
 
     data class Params(val message: PubsubMessage, val subscription: String)
 
-    private val sendgridApiKey = EmailSenderServlet::class.java.getResourceAsStream("sendgrid.env")
-            .reader(Charset.defaultCharset())
-            .readText()
     private val logger = Logger.getLogger("EmailSenderServlet")
-    private val sender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
+    private val sender = Sendgrid("https://api.sendgrid.com")
 
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
         val message = Gson().fromJson(req.reader.readText(), Params::class.java).message
