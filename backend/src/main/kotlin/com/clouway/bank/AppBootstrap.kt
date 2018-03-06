@@ -1,6 +1,5 @@
 package com.clouway.bank
 
-import com.clouway.bank.adapter.email.sender.Sendgrid
 import com.clouway.bank.adapter.eventhandler.user.CompositeUserEventHandler
 import com.clouway.bank.adapter.eventhandler.user.UserEventLogger
 import com.clouway.bank.adapter.gcp.datastore.PersistentAccounts
@@ -21,6 +20,7 @@ import com.clouway.bank.adapter.validation.ValidationAccountsProxy
 import com.clouway.bank.adapter.validation.ValidationUsersProxy
 import com.clouway.bank.adapter.validator.CompositeValidator
 import com.clouway.bank.adapter.validator.regex.RegexValidationRule
+import com.clouway.email.sender.adapter.sendgrid.Sendgrid
 import com.google.appengine.api.datastore.DatastoreServiceFactory
 import com.google.appengine.api.memcache.MemcacheServiceFactory
 import freemarker.template.Configuration
@@ -28,14 +28,9 @@ import freemarker.template.TemplateExceptionHandler
 import org.apache.log4j.Logger
 import spark.Spark.*
 import java.io.File
-import java.nio.charset.Charset
 
 class AppBootstrap {
     fun start() {
-        val sendgridApiKey = AppBootstrap::class.java.getResourceAsStream("sendgrid.env")
-                .reader(Charset.defaultCharset())
-                .readText()
-
         val logger = Logger.getLogger("AppBootstrap")
         val config = Configuration(Configuration.VERSION_2_3_23)
         val file = File(AppBootstrap::class.java.getResource("freemarker/templates/").file)
@@ -62,7 +57,7 @@ class AppBootstrap {
                 ),
                 datastore
         )
-        val emailSender = Sendgrid("https://api.sendgrid.com", sendgridApiKey)
+        val emailSender = Sendgrid("https://api.sendgrid.com")
         val mainObserver = CompositeUserEventHandler(
                 PushUserEvents(logger),
                 UserEventLogger(logger)

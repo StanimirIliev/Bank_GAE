@@ -44,6 +44,7 @@ dependencies {
 
     compile (group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version)
     compile (group: 'com.google.appengine', name: 'appengine-api-1.0-sdk', version: '1.9.60')
+    compile project(':sendgrid')
 
     compile (group: 'org.freemarker', name: 'freemarker', version: '2.3.23')
     compile (group: 'commons-codec', name: 'commons-codec', version: '1.11')

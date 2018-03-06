@@ -1,5 +1,6 @@
-package com.clouway.emailing
+package com.clouway.email.sender.adapter.sendgrid
 
+import com.clouway.email.sender.core.EmailSender
 import com.google.gson.GsonBuilder
 import org.apache.commons.codec.binary.Base64
 import java.io.IOException
@@ -7,6 +8,7 @@ import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
+import java.nio.charset.Charset
 
 private const val SEND_ENDPOINT = "/v3/mail/send"
 
@@ -15,7 +17,7 @@ private const val SEND_ENDPOINT = "/v3/mail/send"
  *
  * @author Miroslav Genov (miroslav.genov@clouway.com)
  */
-data class Sendgrid(private val targetHost: String, private val apiKey: String) {
+data class Sendgrid(private val targetHost: String) : EmailSender {
 
     private var from: String? = null
     private var replyTo: String? = null
@@ -25,6 +27,9 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
     private var bccs: List<Email>? = null
     private val content = mutableListOf<Content>()
     private val attachments: MutableList<Attachments> = mutableListOf<Attachments>()
+    private val apiKey = Sendgrid::class.java.getResourceAsStream("sendgrid.env")
+            .reader(Charset.defaultCharset())
+            .readText()
 
 
     /**
@@ -33,7 +38,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * @param emails recipient email addressses
      * @return the sendgrid object
      */
-    fun addTo(vararg emails: String): Sendgrid {
+    override fun addTo(vararg emails: String): Sendgrid {
         recipients.addAll(emails.map(::Email))
         return this
     }
@@ -45,7 +50,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * @param emails bcc email addresses
      * @return the sendgrid object
      */
-    fun bccTo(vararg emails: String): Sendgrid {
+    override fun bccTo(vararg emails: String): Sendgrid {
         bccs = emails.map(::Email)
         return this
     }
@@ -57,7 +62,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * @param emails bcc email addresses
      * @return the sendgrid object
      */
-    fun ccTo(vararg emails: String): Sendgrid {
+    override fun ccTo(vararg emails: String): Sendgrid {
         ccs = emails.map(::Email)
         return this
     }
@@ -69,7 +74,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * *
      * @return The SendGrid object.
      */
-    fun setFrom(email: String): Sendgrid {
+    override fun setFrom(email: String): Sendgrid {
         this.from = email
         return this
     }
@@ -81,7 +86,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * *
      * @return the SendGrid object.
      */
-    fun setReplyTo(email: String): Sendgrid {
+    override fun setReplyTo(email: String): Sendgrid {
         this.replyTo = email
         return this
     }
@@ -93,7 +98,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * *
      * @return The SendGrid object
      */
-    fun setSubject(subject: String): Sendgrid {
+    override fun setSubject(subject: String): Sendgrid {
         this.subject = subject
 
         return this
@@ -106,7 +111,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * *
      * @return The SendGrid object.
      */
-    fun setText(text: String): Sendgrid {
+    override fun setText(text: String): Sendgrid {
         content.add(Content("text/plain", text))
         return this
     }
@@ -118,7 +123,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * *
      * @return The SendGrid object.
      */
-    fun setHtml(html: String): Sendgrid {
+    override fun setHtml(html: String): Sendgrid {
         content.add(Content("text/html", html))
         return this
     }
@@ -131,7 +136,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      *
      * @return the sendgrid object
      */
-    fun addAttachment(filename: String, content: ByteArray): Sendgrid {
+    override fun addAttachment(filename: String, content: ByteArray): Sendgrid {
         val encoded = String(Base64.encodeBase64(content))
         this.attachments.add(Attachments(encoded, filename))
         return this
@@ -143,7 +148,7 @@ data class Sendgrid(private val targetHost: String, private val apiKey: String) 
      * @throws IOException in case of IO failures
      */
     @Throws(IOException::class)
-    fun send() {
+    override fun send() {
         val gson = GsonBuilder().create()
 
         val personalizations = listOf(Personalization(recipients, ccs, bccs))
