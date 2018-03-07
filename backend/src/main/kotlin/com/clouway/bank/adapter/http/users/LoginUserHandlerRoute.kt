@@ -8,7 +8,7 @@ import spark.Route
 import java.io.StringWriter
 import java.time.LocalDateTime
 
-class LoginUserHandler(
+class LoginUserHandlerRoute(
         private val users: Users,
         private val sessions: Sessions,
         private val userEventHandler: UserEventHandler,

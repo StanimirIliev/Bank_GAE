@@ -1,4 +1,4 @@
-package com.clouway.bank.adapter.eventhandler.user
+package com.clouway.bank.adapter.event.listener
 
 import com.clouway.bank.core.UserEventHandler
 import org.apache.log4j.Logger

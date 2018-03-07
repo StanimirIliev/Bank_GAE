@@ -8,4 +8,5 @@ out/
 settings.gradle
 src/main/webapp/favicon.ico
 src/main/webapp/static/
-/src/main/resources/com/clouway/app/sendgrid.env
+/pubSubKey.json
+/email-sender/pubSubKey.json
