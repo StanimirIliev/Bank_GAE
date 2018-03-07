@@ -9,11 +9,11 @@
     <!-- Main Page -->
     <servlet>
         <servlet-name>email-to-me</servlet-name>
-        <servlet-class>com.clouway.emailing.adapter.http.EmailSenderServlet</servlet-class>
+        <servlet-class>com.clouway.emailing.adapter.http.PubsubReceiverServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>email-to-me</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/_ah/pubsub</url-pattern>
     </servlet-mapping>
 
 
