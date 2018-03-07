@@ -7,14 +7,18 @@
     <display-name>email-sender</display-name>
 
     <!-- Main Page -->
-    <servlet>
-        <servlet-name>email-sender</servlet-name>
-        <servlet-class>com.clouway.emailing.adapter.http.EmailSenderServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>email-sender</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
+    <filter>
+        <filter-name>email-sender</filter-name>
+        <filter-class>spark.servlet.SparkFilter</filter-class>
+        <init-param>
+            <param-name>applicationClass</param-name>
+            <param-value>com.clouway.emailing.Main</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>email-sender</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 
     <security-constraint>

@@ -2,15 +2,13 @@ package com.clouway.bank.adapter.http.accounts
 
 import com.clouway.bank.adapter.http.accounts.dto.ErrorResponse
 import com.clouway.bank.adapter.http.accounts.dto.MessageResponse
-import com.clouway.bank.core.Accounts
+import com.clouway.bank.core.*
 import com.clouway.bank.core.ErrorType.*
-import com.clouway.bank.core.SecuredRoute
-import com.clouway.bank.core.Session
 import com.google.gson.Gson
 import spark.Request
 import spark.Response
 
-class Withdraw(private val accounts: Accounts) : SecuredRoute {
+class Withdraw(private val accounts: Accounts, private val transactionListener: TransactionListener) : SecuredRoute {
 
     data class Params(val value: Float?)
     data class Wrapper(val params: Params)
@@ -26,6 +24,12 @@ class Withdraw(private val accounts: Accounts) : SecuredRoute {
         val operationResponse = accounts.updateBalance(accountId, session.userId, amount * -1f)
         if (operationResponse.isSuccessful) {
             resp.status(201)
+            transactionListener.onTransaction(
+                    session.userId,
+                    accountId,
+                    Operation.WITHDRAW,
+                    amount
+            )
             return MessageResponse("Withdraw successful.")
         }
         return when (operationResponse.error) {
