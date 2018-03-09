@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Route, Link} from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import TransactionPage from '../../SubMenus/TransactionPage'
 import Navigation from '../Transactions/Navigation'
 import axios from 'axios'
 import Loading from '../../Common/Loading'
-import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton'
 
 
 class Transactions extends Component {
@@ -38,7 +38,7 @@ class Transactions extends Component {
             return (
                 <div className="container__accounts" >
                     <h1 className="account_menu__header">You have no transactions yet</h1>
-                    <Link className="linkButton button--close" to="/">Close</Link>
+                    <CloseButton />
                 </div>
             )
         }
@@ -59,7 +59,7 @@ class Transactions extends Component {
                     {routes}
                 </div>
                 <Navigation pages={pages} />
-                <BackButton to="/" name="Close"/>
+                <CloseButton />
             </div>
         )
     }

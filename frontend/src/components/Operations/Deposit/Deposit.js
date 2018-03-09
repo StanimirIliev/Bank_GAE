@@ -5,6 +5,7 @@ import Msg from '../../Common/Message'
 import axios from 'axios'
 import Money from '../../Common/Money'
 import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton'
 
 class Deposit extends Component {
     constructor(props) {
@@ -36,7 +37,7 @@ class Deposit extends Component {
     executeDeposit() {
         this.setState({ loading: true })
         const amount = parseFloat(this.state.depositValue)
-        if(isNaN(amount) || amount < 0 || amount > 340282300000000000000000000000000000000) {
+        if (isNaN(amount) || amount < 0 || amount > 340282300000000000000000000000000000000) {
             this.setState({
                 msg: {
                     content: 'Invalid amount',
@@ -97,7 +98,8 @@ class Deposit extends Component {
                     </div>
                 </div>
                 <button className="button button--execute" onClick={() => { this.executeDeposit() }}>Execute</button>
-                <BackButton to={`/accounts/${id}`} name="Back"/>
+                <BackButton to={`/accounts/${id}`} />
+                <CloseButton />
             </div>
         )
     }

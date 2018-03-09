@@ -5,11 +5,18 @@
         font-size: 20pt;
         border-radius: 7px;
     }
-    .button--close {
+    .button--back {
         border-bottom-left-radius: 0;
         border-top-right-radius: 0;
         border-bottom-right-radius: 20px;
         border-top-left-radius: 20px;
+        width: 130px;
+    }
+    .button--close {
+        border-bottom-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 0;
         width: 130px;
     }
     .button--execute {
@@ -111,12 +118,21 @@
         line-height: 40px;
         font-size: 17pt;
     }
-    .button--close {
+    .button--back {
         font-size: 15pt;
         width: 100px;
         line-height: 35px;
         border-bottom-right-radius: 15px;
         border-top-left-radius: 15px;
+    }
+    .button--close {
+        font-size: 15pt;
+        width: 100px;
+        line-height: 35px;
+        border-bottom-left-radius: 15px;
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 0;
     }
     .button--execute {
         width: 65px;
@@ -214,7 +230,7 @@
         line-height: 30px;
         font-size: 14pt;
     }
-    .button--close {
+    .button-back {
         font-size: 14pt;
         width: 90px;
         line-height: 30px;
@@ -344,12 +360,21 @@
         line-height: 30px;
         font-size: 14pt;
     }
-    .button--close {
+    .button--back {
         font-size: 11pt;
         width: 60px;
         line-height: 20px;
         border-bottom-right-radius: 7px;
         border-top-left-radius: 7px;
+    }
+    .button--close {
+        font-size: 11pt;
+        width: 60px;
+        line-height: 20px;
+        border-bottom-left-radius: 7px;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 0;
     }
     .button--execute {
         width: 40px;
@@ -480,7 +505,7 @@
         font-size: 9pt;
         border-radius: 4px;
     }
-    .button--close {
+    .button--back {
         font-size: 9pt;
         width: 50px;
         line-height: 18px;
@@ -488,6 +513,15 @@
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 7px;
         border-top-left-radius: 7px;
+    }
+    .button--close {
+        font-size: 9pt;
+        width: 50px;
+        line-height: 18px;
+        border-bottom-left-radius: 7px;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 0;
     }
     .button--execute {
         width: 42px;
@@ -627,7 +661,7 @@
         font-size: 7pt;
         border-radius: 2px;
     }
-    .button--close {
+    .button--back {
         font-size: 7pt;
         width: 40px;
         line-height: 15px;
@@ -635,6 +669,15 @@
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 5px;
         border-top-left-radius: 5px;
+    }
+    .button--close {
+        font-size: 7pt;
+        width: 40px;
+        line-height: 15px;
+        border-bottom-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 0;
     }
     .button--execute {
         width: 42px;

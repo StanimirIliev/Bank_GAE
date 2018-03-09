@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import axios from 'axios'
+import {Link} from 'react-router-dom'
 import Loading from '../../Common/Loading'
 import Money from '../../Common/Money'
 import './AccountDetails.css'
+import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton'
 
 class AccountDetails extends Component {
     constructor(props) {
@@ -47,7 +49,8 @@ class AccountDetails extends Component {
                         <Link className="linkButton selected_account__button" to={`/accounts/${id}/withdraw`}>Withdraw</Link>
                     </div>
                 </div>
-                <Link className="linkButton button--close" to="/accounts">Back</Link>
+                <BackButton to="/accounts"/>
+                <CloseButton />
             </div>
         )
     }

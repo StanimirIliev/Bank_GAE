@@ -14,7 +14,7 @@ class Message extends Component {
         return (
             <div className="container__accounts">
                 <h1 className={this.props.messageClass}>{this.props.content}</h1> <br/>
-                <BackButton to={this.state.returnPath} name="Return" />
+                <BackButton to={this.state.returnPath} />
             </div> 
         )
     }

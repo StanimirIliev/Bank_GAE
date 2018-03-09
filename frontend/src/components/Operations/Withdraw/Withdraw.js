@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import Loading from '../../Common/Loading'
 import Msg from '../../Common/Message'
 import axios from 'axios'
 import Money from '../../Common/Money'
+import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton';
 class Withdraw extends Component {
     constructor(props) {
         super(props)
@@ -36,7 +37,7 @@ class Withdraw extends Component {
     executeWithdraw() {
         this.setState({ loading: true })
         const amount = parseFloat(this.state.withdrawValue)
-        if(isNaN(amount) || amount < 0 || amount > 340282300000000000000000000000000000000) {
+        if (isNaN(amount) || amount < 0 || amount > 340282300000000000000000000000000000000) {
             this.setState({
                 msg: {
                     content: 'Invalid amount',
@@ -94,7 +95,8 @@ class Withdraw extends Component {
                     </div>
                 </div>
                 <button className="button button--execute" onClick={() => { this.executeWithdraw() }}>Execute</button>
-                <Link className="linkButton button--close" to={`/accounts/${id}`}>Back</Link>
+                <BackButton to={`/accounts/${id}`} />
+                <CloseButton />
             </div>
         )
     }

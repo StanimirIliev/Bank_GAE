@@ -4,6 +4,7 @@ import axios from 'axios'
 import Account from '../../Common/Account'
 import Loading from '../../Common/Loading'
 import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton'
 
 class RemoveAccountsMenu extends Component {
     constructor() {
@@ -26,7 +27,7 @@ class RemoveAccountsMenu extends Component {
 
     render() {
         const { loading, accounts } = this.state
-        
+
         if (loading) {
             return (<Loading />)
         }
@@ -34,7 +35,8 @@ class RemoveAccountsMenu extends Component {
             return (
                 <div className="container__accounts container__show_accounts" >
                     <h1 className="show_accounts__header">You have no accounts yet.</h1>
-                    <BackButton to="/main" name="Back"/>
+                    <BackButton to="/main" />
+                    <CloseButton />
                 </div>
             )
         }
@@ -66,7 +68,8 @@ class RemoveAccountsMenu extends Component {
                 <div className="show_accounts__container">
                     {accountsRendered}
                 </div>
-                <BackButton to="/main" name="Back"/>
+                <BackButton to="/main" />
+                <CloseButton />
             </div>
         )
     }

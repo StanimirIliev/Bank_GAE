@@ -2,8 +2,8 @@
 
 shellDir=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 calledFrom=$PWD
-# path in resources e.g. com/clouway/app/
-indexFilesPath=com/clouway/app/adapter/http/get
+# path in resources e.g. com/clouway/bank/
+indexFilesPath=com/clouway/bank/adapter/http/common
 cd $shellDir/../frontend/
 npm run build
 rm -rf ../backend/src/main/webapp/static/

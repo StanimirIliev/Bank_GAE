@@ -9,3 +9,4 @@ src/main/webapp/favicon.ico
 src/main/webapp/static/
 /pubSubKey.json
 /email-sender/pubSubKey.json
+src/main/resources/com/clouway/bank/adapter

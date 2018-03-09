@@ -4,6 +4,7 @@ import axios from 'axios'
 import Account from '../../Common/Account'
 import Loading from '../../Common/Loading'
 import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton'
 import './ShowAccounts.css'
 
 class ShowAccounts extends Component {
@@ -50,7 +51,7 @@ class ShowAccounts extends Component {
                             currency={accounts[i].currency} />
                         <hr className="splitter__accounts" />
                     </Link>)
-            }   
+            }
             else {
                 accountsRendered.push(
                     <Link key={i} className="container__accounts__item" to={`/accounts/${accounts[i].id}`}>
@@ -67,7 +68,8 @@ class ShowAccounts extends Component {
                 <div className="show_accounts__container">
                     {accountsRendered}
                 </div>
-                <BackButton to="/main" name="Back"/>
+                <BackButton to="/main" />
+                <CloseButton />
             </div>
         )
     }

@@ -4,6 +4,8 @@ import axios from 'axios'
 import Loading from '../../Common/Loading'
 import Message from '../../Common/Message'
 import Money from '../../Common/Money'
+import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton'
 import './RemoveAccount.css'
 
 class AccountDetails extends Component {
@@ -72,7 +74,8 @@ class AccountDetails extends Component {
                         <Link className="linkButton remove_account__buttons" to='/delete'>No</Link>
                     </div>
                 </div>
-                <Link className="linkButton button--close" to="/delete">Back</Link>
+                <BackButton to="/delete" />
+                <CloseButton />
             </div>
         )
     }

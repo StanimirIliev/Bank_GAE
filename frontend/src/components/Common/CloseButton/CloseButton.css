@@ -1,0 +1,14 @@
+.button--close {
+    color: #DDD !important;
+    background-color: rgb(184, 78, 78) !important;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+}
+
+.button--close:hover {
+    color: #EEE !important;
+    background-color: rgb(164, 58, 58) !important;
+}

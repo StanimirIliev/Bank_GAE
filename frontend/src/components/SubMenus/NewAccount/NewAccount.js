@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import Loading from '../../Common/Loading'
 import Message from '../../Common/Message'
 import axios from 'axios'
+import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton'
 import './NewAccount.css'
 
 class NewAccount extends Component {
@@ -10,7 +11,7 @@ class NewAccount extends Component {
         super()
         this.state = {
             currency: "BGN",
-            title: null, 
+            title: null,
             loading: false,
             message: null
         }
@@ -21,7 +22,7 @@ class NewAccount extends Component {
     createNewAccount() {
         this.setState({ loading: true })
         const title = this.state.title
-        if(title === null || title.length > 30) {
+        if (title === null || title.length > 30) {
             this.setState({
                 message: {
                     content: 'Invalid title',
@@ -85,7 +86,8 @@ class NewAccount extends Component {
                     </select>
                 </div>
                 <button className="button new_account__button" onClick={() => { this.createNewAccount() }}>Create</button>
-                <Link className="linkButton button--close" to="/main">Back</Link>
+                <BackButton to="/main" />
+                <CloseButton />
             </div>
         )
     }

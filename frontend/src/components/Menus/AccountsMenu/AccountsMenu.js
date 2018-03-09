@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import BackButton from '../../Common/BackButton'
+import CloseButton from '../../Common/CloseButton'
 import './AccountsMenu.css'
 
 const AccountsMenu = () => (
@@ -25,7 +25,7 @@ const AccountsMenu = () => (
                 </div>
             </Link>
         </div>
-        <BackButton to="/" name="Close"/>
+        <CloseButton />
     </div>
 )
 
