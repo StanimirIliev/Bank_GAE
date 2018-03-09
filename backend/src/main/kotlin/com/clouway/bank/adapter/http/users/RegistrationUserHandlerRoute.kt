@@ -9,11 +9,11 @@ import java.io.StringWriter
 import java.time.LocalDateTime
 import java.util.*
 
-class RegisterUserHandler(private val users: Users,
-                          private val sessions: Sessions,
-                          private val userEventHandler: UserEventHandler,
-                          private val validator: RequestValidator,
-                          private val config: Configuration) : Route {
+class RegistrationUserHandlerRoute(private val users: Users,
+                                   private val sessions: Sessions,
+                                   private val userEventHandler: UserEventHandler,
+                                   private val validator: RequestValidator,
+                                   private val config: Configuration) : Route {
     data class Params(val email: String, val username: String, val password: String, val confirmPassword: String)
 
     override fun handle(req: Request, resp: Response): Any {
